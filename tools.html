@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALL TOOLS ZACK — Premium Toolkit</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;700;800;900&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+:root {
+  --void-black: #050505; --void-dark: #0d0d0d; --void-card: #141414;
+  --neon-cyan: #ffffff; --neon-blue: #d1d5db; --neon-soft: #9ca3af;
+  --ink-soft: rgba(255,255,255,0.75); --ink-mute: rgba(255,255,255,0.5);
+  --ink-faint: rgba(255,255,255,0.3); --ink-trace: rgba(255,255,255,0.08);
+  --ease-quiet: cubic-bezier(.22, 1, .36, 1); --ease-precise: cubic-bezier(.4, 0, .2, 1); --ease-emphasis: cubic-bezier(.16, 1, .3, 1);
+}
+body.theme-cyber { --void-black: #0b0b12; --void-dark: #12121d; --void-card: #16161f; --neon-cyan: #a855f7; --neon-blue: #8b5cf6; --neon-soft: #c084fc; --ink-trace: rgba(168, 85, 247, 0.15); }
+body.theme-blackhole { --void-black: #000000; --void-dark: #050008; --void-card: #0a000f; --neon-cyan: #9d4edd; --neon-blue: #c77dff; --neon-soft: #e0aaff; --ink-trace: rgba(157, 78, 221, 0.2); }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: var(--void-black); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; min-height: 100vh; transition: background 400ms var(--ease-quiet), color 400ms var(--ease-quiet); }
+body { overflow-y: auto; padding-bottom: 70px; }
+::selection { background: var(--neon-cyan); color: var(--void-black); }
+::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--void-black); } ::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 3px; opacity: 0.5; }
+
+.preloader { position: fixed; inset: 0; background: var(--void-black); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 600ms var(--ease-quiet), transform 1000ms var(--ease-emphasis); overflow: hidden; }
+.preloader.done { opacity: 0; transform: translateY(-100%); pointer-events: none; }
+.pre-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 50px 50px; mask-image: radial-gradient(ellipse at center, black 10%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse at center, black 10%, transparent 70%); animation: gridDrift 20s linear infinite; }
+@keyframes gridDrift { 0% { background-position: 0 0; } 100% { background-position: 50px 50px; } }
+.pre-center { position: relative; text-align: center; z-index: 2; }
+.pre-logo { width: 100px; height: 100px; margin: 0 auto 2rem; display: block; filter: drop-shadow(0 0 8px rgba(255,255,255,0.2)); }
+body.theme-cyber .pre-logo, body.theme-blackhole .pre-logo { filter: drop-shadow(0 0 12px var(--neon-cyan)); }
+.pre-logo path, .pre-logo circle { stroke: var(--neon-cyan); fill: none; stroke-linecap: square; }
+.pre-logo .br { stroke-width: 2; stroke-dasharray: 30; stroke-dashoffset: 30; animation: drawBr 0.4s var(--ease-quiet) forwards; }
+.pre-logo .br-tl { animation-delay: 0.1s; } .pre-logo .br-tr { animation-delay: 0.2s; } .pre-logo .br-bl { animation-delay: 0.3s; } .pre-logo .br-br { animation-delay: 0.4s; }
+.pre-logo .z { stroke-width: 3; stroke-dasharray: 220; stroke-dashoffset: 220; animation: drawZ 1.1s var(--ease-quiet) 0.6s forwards; }
+.pre-logo .dot { fill: var(--neon-cyan); stroke: none; opacity: 0; animation: dotPulse 0.4s var(--ease-quiet) 1.6s forwards; }
+@keyframes drawBr { to { stroke-dashoffset: 0; } } @keyframes drawZ { to { stroke-dashoffset: 0; } } @keyframes dotPulse { 0% { opacity: 0; transform: scale(0); } 100% { opacity: 1; transform: scale(1); } }
+.pre-name { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1.5rem; letter-spacing: 0.2em; color: #fff; margin-bottom: 0.5rem; opacity: 0; animation: fadeUp 0.6s var(--ease-quiet) 1.1s forwards; }
+.pre-name span { color: var(--neon-cyan); }
+.pre-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.4em; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.6s var(--ease-quiet) 1.3s forwards; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.pre-bar-wrap { width: 300px; margin: 0 auto; opacity: 0; animation: fadeUp 0.5s var(--ease-quiet) 1.4s forwards; }
+.pre-bar-track { width: 100%; height: 2px; background: rgba(255,255,255,0.08); position: relative; overflow: hidden; }
+.pre-bar-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0; background: var(--neon-cyan); transition: width 0.15s linear; }
+body.theme-cyber .pre-bar-fill, body.theme-blackhole .pre-bar-fill { box-shadow: 0 0 10px var(--neon-cyan); }
+.pre-meta { display: flex; justify-content: space-between; margin-top: 0.75rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--ink-mute); }
+.pre-status::before { content: '> '; color: var(--neon-cyan); } .pre-pct { color: var(--neon-cyan); font-weight: 700; }
+.pre-log { width: 300px; margin: 1.5rem auto 0; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--ink-faint); text-align: left; height: 80px; overflow: hidden; opacity: 0; animation: fadeUp 0.5s var(--ease-quiet) 1.5s forwards; }
+.pre-log-line { opacity: 0; animation: logIn 0.3s var(--ease-quiet) forwards; } .pre-log-line::before { content: '$ '; color: var(--neon-cyan); }
+@keyframes logIn { to { opacity: 1; } }
+
+#fluid-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; transition: opacity 400ms var(--ease-quiet); }
+.grid-overlay { position: fixed; inset: 0; z-index: 1; pointer-events: none; background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%); -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%); }
+.content { position: relative; z-index: 2; }
+
+nav.top-nav { position: fixed; top: 0; left: 0; right: 0; padding: 1rem 1.5rem; z-index: 100; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); background: rgba(5,5,5,0.8); border-bottom: 1px solid var(--ink-trace); transition: background 400ms var(--ease-quiet); }
+body.theme-cyber nav.top-nav { background: rgba(11,11,18,0.8); } body.theme-blackhole nav.top-nav { background: rgba(0,0,0,0.9); }
+.nav-brand { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+.nav-logo { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: var(--neon-cyan); color: var(--void-black); border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1rem; }
+.nav-word { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.05em; color: #fff; text-transform: uppercase; }
+.nav-word span { color: var(--neon-cyan); }
+.nav-status { display: flex; align-items: center; gap: 0.45rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--ink-mute); background: rgba(255,255,255,0.05); padding: 0.4rem 0.8rem; border-radius: 20px; border: 1px solid var(--ink-trace); }
+.nav-status::before { content: ''; width: 6px; height: 6px; background: #10b981; border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 0.35; } 50% { opacity: 1; } }
+
+.hero { min-height: 90vh; padding: 8rem 1.5rem 4rem; display: flex; flex-direction: column; justify-content: center; position: relative; max-width: 1200px; margin: 0 auto; }
+.hero-banner { width: 100%; max-width: 900px; aspect-ratio: 16 / 9; margin-bottom: 2.5rem; border-radius: 16px; overflow: hidden; position: relative; border: 1px solid var(--ink-trace); box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; transform: translateY(20px); transition: opacity 800ms var(--ease-quiet), transform 800ms var(--ease-quiet); }
+body.loaded .hero-banner { opacity: 1; transform: none; transition-delay: 200ms; }
+.banner-media { width: 100%; height: 100%; object-fit: cover; }
+.banner-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(5,5,5,0.3) 0%, rgba(5,5,5,0.95) 100%); }
+.hero-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--neon-cyan); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem; opacity: 0; transform: translateY(20px); transition: opacity 800ms var(--ease-quiet), transform 800ms var(--ease-quiet); }
+.hero-label::before { content: ''; width: 30px; height: 1px; background: var(--neon-cyan); }
+body.loaded .hero-label { opacity: 1; transform: none; transition-delay: 300ms; }
+#hero-title { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: clamp(2.5rem, 10vw, 6rem); letter-spacing: -0.05em; line-height: 0.9; color: #fff; margin-bottom: 1.5rem; word-break: break-all; }
+#hero-title.is-decoding { text-shadow: 0 0 14px rgba(255,255,255,0.3); }
+body.theme-cyber #hero-title.is-decoding, body.theme-blackhole #hero-title.is-decoding { text-shadow: 0 0 14px var(--neon-cyan); }
+.hero-sub { max-width: 500px; font-size: 1rem; line-height: 1.6; color: var(--ink-soft); opacity: 0; transform: translateY(20px); transition: opacity 800ms var(--ease-quiet), transform 800ms var(--ease-quiet); }
+body.loaded .hero-sub { opacity: 1; transform: none; transition-delay: 900ms; }
+
+section { padding: 4rem 1.5rem; position: relative; }
+.section-head { max-width: 1200px; margin: 0 auto 2rem; position: relative; }
+.section-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--neon-cyan); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem; }
+.section-label::before { content: ''; width: 30px; height: 1px; background: var(--neon-cyan); }
+.section-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: clamp(1.5rem, 4vw, 2.5rem); letter-spacing: -0.03em; line-height: 1.05; color: #fff; }
+.section-title em { font-style: normal; color: var(--neon-cyan); }
+.filter-tabs { max-width: 1200px; margin: 0 auto 1.5rem; display: flex; gap: 0; border-bottom: 1px solid var(--ink-trace); overflow-x: auto; scrollbar-width: none; }
+.filter-tabs::-webkit-scrollbar { display: none; }
+.filter-tab { background: transparent; border: none; color: var(--ink-mute); padding: 0.8rem 1.2rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: color 300ms var(--ease-quiet); position: relative; white-space: nowrap; display: flex; align-items: center; gap: 0.3rem; }
+.filter-tab span { font-size: 0.55rem; color: var(--ink-faint); }
+.filter-tab:hover { color: var(--ink-soft); } .filter-tab.active { color: var(--neon-cyan); } .filter-tab.active span { color: var(--neon-cyan); }
+.filter-tab.active::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px; background: var(--neon-cyan); }
+
+.tools-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.tool-card { background: var(--void-card); padding: 1.2rem; cursor: pointer; transition: all 400ms var(--ease-quiet); position: relative; overflow: hidden; min-height: 180px; display: flex; flex-direction: column; border: 1px solid var(--ink-trace); border-radius: 12px; opacity: 0; transform: translateY(20px); }
+.tool-card.in { opacity: 1; transform: none; transition: opacity 600ms var(--ease-quiet), transform 600ms var(--ease-quiet), background 400ms var(--ease-quiet), border-color 400ms var(--ease-quiet); }
+.tool-card.hidden { display: none; }
+.tool-card:hover { border-color: var(--neon-cyan); transform: translateY(-3px); }
+body.theme-cyber .tool-card:hover, body.theme-blackhole .tool-card:hover { background: rgba(168, 85, 247, 0.05); }
+.tool-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem; }
+.tool-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.05); border: 1px solid var(--ink-trace); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--ink-soft); transition: color 0.3s; }
+.tool-card:hover .tool-icon { color: var(--neon-cyan); }
+body.theme-cyber .tool-icon, body.theme-blackhole .tool-icon { background: rgba(168,85,247,0.1); border-color: rgba(168,85,247,0.2); }
+.tool-cat { font-family: 'JetBrains Mono', monospace; font-size: 0.5rem; letter-spacing: 0.1em; color: var(--neon-cyan); background: rgba(255,255,255,0.05); border: 1px solid var(--ink-trace); padding: 0.2rem 0.4rem; border-radius: 4px; text-transform: uppercase; }
+body.theme-cyber .tool-cat, body.theme-blackhole .tool-cat { background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.2); }
+.tool-name { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1rem; color: #fff; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+.tool-desc { font-size: 0.75rem; color: var(--ink-mute); line-height: 1.4; flex: 1; }
+.tool-arrow { margin-top: 0.8rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--ink-faint); display: flex; justify-content: space-between; align-items: center; }
+.tool-card:hover .tool-arrow { color: var(--neon-cyan); }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 400ms var(--ease-quiet); }
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -46%); width: 95%; max-width: 600px; max-height: 85vh; background: var(--void-dark); border: 1px solid var(--ink-trace); z-index: 201; opacity: 0; pointer-events: none; transition: opacity 400ms var(--ease-quiet), transform 500ms var(--ease-emphasis); overflow-y: auto; border-radius: 16px; }
+body.theme-cyber .modal, body.theme-blackhole .modal { border-color: rgba(168,85,247,0.3); }
+.modal.active { opacity: 1; pointer-events: all; transform: translate(-50%, -50%); }
+.modal-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 1.5rem; border-bottom: 1px solid var(--ink-trace); position: sticky; top: 0; background: var(--void-dark); z-index: 10; }
+.modal-header-left { flex: 1; display: flex; align-items: center; gap: 0.8rem; }
+.modal-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.05); border: 1px solid var(--ink-trace); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--neon-cyan); }
+body.theme-cyber .modal-icon, body.theme-blackhole .modal-icon { background: rgba(168,85,247,0.1); border-color: rgba(168,85,247,0.2); }
+.modal-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--neon-cyan); margin-bottom: 0.3rem; }
+.modal-title { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1.2rem; color: #fff; letter-spacing: -0.02em; }
+.modal-close { background: transparent; border: 1px solid var(--ink-trace); color: var(--ink-soft); width: 32px; height: 32px; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; transition: all 300ms var(--ease-quiet); flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+.modal-close:hover { background: var(--neon-cyan); color: var(--void-black); border-color: var(--neon-cyan); }
+.modal-body { padding: 1.5rem; }
+
+.tool-input, .tool-textarea, .tool-select { width: 100%; background: var(--void-black); border: 1px solid var(--ink-trace); color: #fff; padding: 0.8rem 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; transition: border 300ms var(--ease-quiet); border-radius: 8px; }
+.tool-input:focus, .tool-textarea:focus, .tool-select:focus { outline: none; border-color: var(--neon-cyan); }
+.tool-textarea { min-height: 100px; resize: vertical; }
+.tool-label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 0.4rem; }
+.tool-field { margin-bottom: 1rem; }
+.tool-btn { background: transparent; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); padding: 0.7rem 1.2rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 300ms var(--ease-quiet); margin-right: 0.4rem; margin-bottom: 0.4rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; border-radius: 8px; font-weight: 700; }
+.tool-btn:hover { background: var(--neon-cyan); color: var(--void-black); }
+.tool-btn.secondary { border-color: var(--ink-trace); color: var(--ink-soft); }
+.tool-btn.secondary:hover { background: rgba(255,255,255,0.06); color: #fff; border-color: rgba(255,255,255,0.3); }
+.tool-output { background: var(--void-black); border: 1px solid var(--ink-trace); padding: 0.8rem; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--neon-cyan); word-break: break-all; min-height: 40px; white-space: pre-wrap; line-height: 1.5; border-radius: 8px; }
+.tool-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+.tool-checkbox { display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--ink-soft); cursor: pointer; user-select: none; }
+.tool-checkbox input { accent-color: var(--neon-cyan); width: 14px; height: 14px; }
+
+.dl-result { margin-top: 1.2rem; }
+.dl-card { background: var(--void-black); border: 1px solid var(--ink-trace); border-radius: 12px; overflow: hidden; margin-bottom: 1rem; }
+.dl-thumb { width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--void-card); }
+.dl-info { padding: 1rem; }
+.dl-title { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 0.4rem; }
+.dl-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--ink-mute); margin-bottom: 0.8rem; }
+.dl-links { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+.settings-overlay { position: fixed; inset: 0; background: var(--void-black); z-index: 250; opacity: 0; pointer-events: none; transition: opacity 400ms var(--ease-quiet); overflow-y: auto; }
+.settings-overlay.active { opacity: 1; pointer-events: all; }
+.settings-header { padding: 1.5rem; border-bottom: 1px solid var(--ink-trace); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--void-black); z-index: 10; backdrop-filter: blur(10px); }
+.settings-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 1.3rem; color: #fff; letter-spacing: -0.02em; }
+.settings-body { padding: 1.5rem; max-width: 800px; margin: 0 auto; padding-bottom: 100px; }
+.settings-card { background: var(--void-card); border: 1px solid var(--ink-trace); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.settings-card h3 { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--neon-cyan); margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--ink-trace); }
+.theme-opt { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--ink-trace); }
+.theme-opt:last-child { border-bottom: none; padding-bottom: 0; }
+.theme-name { font-weight: 700; color: #fff; font-size: 0.9rem; }
+.theme-btn { padding: 0.5rem 1rem; border: 1px solid var(--ink-trace); background: transparent; color: var(--ink-soft); border-radius: 8px; cursor: pointer; font-family: 'JetBrains Mono'; font-size: 0.65rem; font-weight: 700; transition: all 0.3s; }
+.theme-btn.active { background: var(--neon-cyan); color: var(--void-black); border-color: var(--neon-cyan); }
+
+.info-row { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--ink-trace); }
+.info-row:last-child { border-bottom: none; padding-bottom: 0; }
+.info-label { color: var(--ink-mute); font-size: 0.85rem; }
+.info-value { color: #fff; font-size: 0.85rem; font-weight: 700; }
+.status-active { color: #10b981; display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 0.85rem; }
+.status-active::before { content: ''; width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981; }
+
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+.contact-btn { padding: 0.8rem; border-radius: 8px; text-decoration: none; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.8rem; transition: transform 0.2s; }
+.contact-btn:hover { transform: scale(1.03); }
+.contact-btn.wa { background: #25D366; color: #000; }
+.contact-btn.tg { background: #0088cc; color: #fff; }
+.contact-btn svg { width: 20px; height: 20px; }
+
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(5,5,5,0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--ink-trace); display: flex; justify-content: space-around; padding: 0.5rem 0; z-index: 150; }
+body.theme-cyber .bottom-nav { background: rgba(11,11,18,0.95); } body.theme-blackhole .bottom-nav { background: rgba(0,0,0,0.98); }
+.nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--ink-mute); cursor: pointer; text-decoration: none; transition: color 0.3s; padding: 0.5rem 1.5rem; border-radius: 8px; }
+.nav-btn.active { color: var(--neon-cyan); }
+.nav-btn svg { width: 22px; height: 22px; stroke-width: 1.5; }
+.nav-btn span { font-size: 0.6rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.1em; }
+
+.music-toggle { position: fixed; bottom: 90px; right: 1.5rem; background: var(--void-card); border: 1px solid var(--ink-trace); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 150; color: var(--neon-cyan); transition: all 0.3s; }
+.music-toggle:hover { background: var(--neon-cyan); color: var(--void-black); }
+.music-toggle svg { width: 18px; height: 18px; }
+
+footer { padding: 3rem 1.5rem 2rem; border-top: 1px solid var(--ink-trace); position: relative; text-align: center; }
+.footer-bottom { max-width: 1200px; margin: 0 auto; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--ink-faint); letter-spacing: 0.05em; }
+
+.headline-enter { opacity: 0; transform: translateY(40px); transition: opacity 1200ms var(--ease-quiet), transform 1200ms var(--ease-quiet); will-change: transform, opacity; }
+.headline-enter.is-in { opacity: 1; transform: none; }
+
+@media (max-width: 768px) {
+  .hero { padding: 6rem 1rem 3rem; min-height: 80vh; }
+  section { padding: 3rem 1rem; }
+  .modal { width: 95%; max-height: 90vh; } .modal-header { padding: 1rem; } .modal-body { padding: 1rem; }
+  .tools-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; } .tool-card { padding: 1rem; min-height: 160px; }
+  .nav-btn { padding: 0.5rem 1rem; } .music-toggle { bottom: 80px; right: 1rem; }
+  .contact-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="preloader" id="preloader">
+  <div class="pre-grid"></div>
+  <div class="pre-center">
+    <svg class="pre-logo" viewBox="0 0 100 100">
+      <path class="br br-tl" d="M 12 22 L 12 12 L 22 12"/><path class="br br-tr" d="M 78 12 L 88 12 L 88 22"/><path class="br br-bl" d="M 12 78 L 12 88 L 22 88"/><path class="br br-br" d="M 78 88 L 88 88 L 88 78"/>
+      <path class="z" d="M 28 32 L 72 32 L 28 68 L 72 68"/><circle class="dot" cx="88" cy="12" r="3"/>
+    </svg>
+    <div class="pre-name">ALL TOOLS <span>ZACK</span></div>
+    <div class="pre-tag">Premium Toolkit · v7.5</div>
+    <div class="pre-bar-wrap"><div class="pre-bar-track"><div class="pre-bar-fill" id="pre-bar-fill"></div></div><div class="pre-meta"><span class="pre-status" id="pre-status">INITIALIZING</span><span class="pre-pct" id="pre-pct">00%</span></div></div>
+    <div class="pre-log" id="pre-log"></div>
+  </div>
+</div>
+
+<canvas id="fluid-canvas"></canvas>
+<div class="grid-overlay"></div>
+<audio id="bg-music" loop><source src="https://files.catbox.moe/asbkzp.mp3" type="audio/mpeg"></audio>
+
+<div class="content">
+  <nav class="top-nav">
+    <a href="#home" class="nav-brand"><div class="nav-logo">Z</div><span class="nav-word">ALL TOOLS <span>ZACK</span></span></a>
+    <div class="nav-status">SYSTEM ACTIVE</div>
+  </nav>
+
+  <section class="hero" id="home">
+    <div class="hero-banner" id="hero-banner"></div>
+    <div class="hero-label">PREMIUM TOOLKIT · 29 UTILITIES</div>
+    <h1 id="hero-title">ALL TOOLS ZACK</h1>
+    <p class="hero-sub">Satu platform berisi 29 utilitas siap pakai. Downloader tanpa watermark, kompresor gambar, generator QR, upload file ke link, kriptografi — semua berjalan cepat, gratis, tanpa iklan mengganggu.</p>
+  </section>
+
+  <section id="tools">
+    <div class="section-head"><div class="section-label">CATALOG</div><h2 class="section-title headline-enter">Semua Tools</h2></div>
+    <div class="filter-tabs" id="filter-tabs">
+      <button class="filter-tab active" data-cat="all">All <span>29</span></button>
+      <button class="filter-tab" data-cat="downloader">Downloader <span>6</span></button>
+      <button class="filter-tab" data-cat="upload">Upload <span>1</span></button>
+      <button class="filter-tab" data-cat="crypto">Crypto <span>5</span></button>
+      <button class="filter-tab" data-cat="text">Text <span>5</span></button>
+      <button class="filter-tab" data-cat="convert">Convert <span>7</span></button>
+      <button class="filter-tab" data-cat="calc">Calc <span>2</span></button>
+      <button class="filter-tab" data-cat="generate">Generate <span>3</span></button>
+    </div>
+    <div class="tools-grid" id="tools-grid"></div>
+  </section>
+
+  <footer>
+    <div class="footer-bottom">
+      © 2025 ALL TOOLS ZACK — Premium Multi-Page Edition
+    </div>
+  </footer>
+</div>
+
+<div class="modal-overlay" id="modal-overlay"></div>
+<div class="modal" id="modal">
+  <div class="modal-header">
+    <div class="modal-header-left">
+      <div class="modal-icon" id="modal-icon"><i class="fa-solid fa-cube"></i></div>
+      <div>
+        <div class="modal-label" id="modal-label">TOOL</div>
+        <div class="modal-title" id="modal-title">Tool</div>
+      </div>
+    </div>
+    <button class="modal-close" id="modal-close">×</button>
+  </div>
+  <div class="modal-body" id="modal-body"></div>
+</div>
+
+<div class="settings-overlay" id="settings-overlay">
+  <div class="settings-header">
+    <div class="settings-title">Pengaturan Aplikasi</div>
+    <button class="modal-close" id="settings-close">×</button>
+  </div>
+  <div class="settings-body">
+    <div class="settings-card">
+      <h3>Tema Tampilan</h3>
+      <div class="theme-opt"><div class="theme-name">HITAM PUTIH ABU (DEFAULT)</div><button class="theme-btn active" data-theme="mono">Aktif</button></div>
+      <div class="theme-opt"><div class="theme-name">CYBER OBSIDIAN</div><button class="theme-btn" data-theme="cyber">Aktifkan</button></div>
+      <div class="theme-opt"><div class="theme-name">BLACK HOLE</div><button class="theme-btn" data-theme="blackhole">Aktifkan</button></div>
+    </div>
+    
+    <div class="settings-card">
+      <h3>Hubungi Developer</h3>
+      <div class="contact-grid">
+        <a href="https://wa.me/6282318109918" target="_blank" class="contact-btn wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.247-.694.247-1.289.173-1.413z"/></svg> WhatsApp</a>
+        <a href="https://t.me/zackXdkk" target="_blank" class="contact-btn tg"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.324-.437.891-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg> Telegram</a>
+      </div>
+    </div>
+    
+    <div class="settings-card">
+      <h3>Informasi Sistem</h3>
+      <div class="info-row"><span class="info-label">Nama Aplikasi</span><span class="info-value">ALL TOOLS BY ZACK</span></div>
+      <div class="info-row"><span class="info-label">Versi</span><span class="info-value">v7.5 (Premium Multi - Page)</span></div>
+      <div class="info-row"><span class="info-label">Status</span><span class="status-active">Aktif & Stabil</span></div>
+    </div>
+  </div>
+</div>
+
+<button class="music-toggle" id="music-toggle" title="Toggle Music">
+  <svg id="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+</button>
+
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12l9-9 9 9M5 10v10h4v-6h6v6h4V10" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Home</span></button>
+  <button class="nav-btn" data-nav="download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Download</span></button>
+  <button class="nav-btn" data-nav="setting"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Setting</span></button>
+</nav>
+
+<script>
+const themeColors = {
+  mono: { c3: [1.0, 1.0, 1.0], c4: [0.8, 0.8, 0.8] },
+  cyber: { c3: [0.66, 0.33, 0.97], c4: [0.55, 0.26, 0.86] },
+  blackhole: { c3: [0.62, 0.31, 0.87], c4: [0.78, 0.49, 1.0] }
+};
+
+const themeBanners = {
+  mono: "https://files.catbox.moe/6s7klz.mp4", 
+  cyber: "https://files.catbox.moe/wdqsmq.mp4", 
+  blackhole: "https://files.catbox.moe/h5ehs7.mp4"  
+};
+
+let currentTheme = localStorage.getItem('zack-theme') || 'mono';
+
+function loadBanner() {
+  const url = themeBanners[currentTheme] || themeBanners.mono;
+  const container = document.getElementById('hero-banner');
+  if (!container) return;
+  if (url.match(/\.(mp4|webm)$/i)) {
+    container.innerHTML = `<video src="${url}" autoplay loop muted playsinline class="banner-media"></video><div class="banner-overlay"></div>`;
+  } else {
+    container.innerHTML = `<img src="${url}" alt="Banner" class="banner-media"><div class="banner-overlay"></div>`;
+  }
+}
+
+function applyTheme(theme) {
+  document.body.classList.remove('theme-cyber', 'theme-blackhole');
+  if (theme !== 'mono') document.body.classList.add('theme-' + theme);
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.theme === theme);
+    btn.textContent = btn.dataset.theme === theme ? 'Aktif' : 'Aktifkan';
+  });
+  localStorage.setItem('zack-theme', theme);
+  currentTheme = theme;
+  loadBanner();
+  if (window.updateShaderColors) window.updateShaderColors(theme);
+}
+
+document.querySelectorAll('.theme-btn').forEach(btn => {
+  btn.addEventListener('click', () => applyTheme(btn.dataset.theme));
+});
+
+applyTheme(currentTheme);
+
+const preloader = document.getElementById('preloader');
+const preBar = document.getElementById('pre-bar-fill');
+const prePct = document.getElementById('pre-pct');
+const preStatus = document.getElementById('pre-status');
+const preLog = document.getElementById('pre-log');
+
+const statusPhases = [
+  { at: 0, text: 'INITIALIZING SYSTEM' }, { at: 20, text: 'LOADING MODULES' },
+  { at: 45, text: 'BINDING EVENT' }, { at: 70, text: 'COMPILING SHADERS' },
+  { at: 90, text: 'FINALIZING' }, { at: 100, text: 'READY' }
+];
+const logMessages = [
+  'boot all_tools_zack v7.5', 'init webgl context', 'load fluid shader',
+  'mount 29 tool modules', 'bind downloader api', 'register event listeners',
+  'build tools grid', 'start scramble decode', 'system online'
+];
+
+function addLogLine(msg, delay) {
+  setTimeout(() => {
+    const line = document.createElement('div');
+    line.className = 'pre-log-line';
+    line.textContent = msg;
+    preLog.appendChild(line);
+    if (preLog.children.length > 4) preLog.removeChild(preLog.firstChild);
+  }, delay);
+}
+
+function runPreloader() {
+  logMessages.forEach((msg, i) => addLogLine(msg, 200 + i * 280));
+  let p = 0;
+  const interval = setInterval(() => {
+    p += Math.random() * 6 + 2;
+    if (p >= 100) p = 100;
+    preBar.style.width = p + '%';
+    prePct.textContent = String(Math.floor(p)).padStart(2, '0') + '%';
+    for (let i = statusPhases.length - 1; i >= 0; i--) {
+      if (p >= statusPhases[i].at) { preStatus.textContent = statusPhases[i].text; break; }
+    }
+    if (p >= 100) {
+      clearInterval(interval);
+      setTimeout(() => {
+        preloader.classList.add('done');
+        document.body.classList.add('loaded');
+        setTimeout(() => {
+          preloader.style.display = 'none';
+          scramble();
+          revealTools();
+        }, 1000);
+      }, 500);
+    }
+  }, 100);
+}
+
+setTimeout(runPreloader, 1600);
+
+const bgMusic = document.getElementById('bg-music');
+const musicToggle = document.getElementById('music-toggle');
+const musicIcon = document.getElementById('music-icon');
+let isMusicPlaying = false;
+
+bgMusic.volume = 0.4;
+
+const playMusic = () => {
+  if (!isMusicPlaying) {
+    bgMusic.play().then(() => {
+      isMusicPlaying = true;
+      musicIcon.innerHTML = '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>';
+    }).catch(() => {});
+  }
+};
+
+setTimeout(playMusic, 2000);
+
+document.body.addEventListener('click', () => {
+  if (!isMusicPlaying) playMusic();
+}, { once: true });
+
+musicToggle.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (isMusicPlaying) {
+    bgMusic.pause();
+    isMusicPlaying = false;
+    musicIcon.innerHTML = '<line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v9l12-2v-9"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>';
+  } else {
+    bgMusic.play();
+    isMusicPlaying = true;
+    musicIcon.innerHTML = '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>';
+  }
+});
+
+const canvas = document.getElementById('fluid-canvas');
+const gl = canvas.getContext('webgl', { antialias: false, alpha: false });
+let mouseX = 0.5, mouseY = 0.5;
+let running = true;
+
+function resize() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  canvas.width = Math.floor(window.innerWidth * dpr);
+  canvas.height = Math.floor(window.innerHeight * dpr);
+  canvas.style.width = window.innerWidth + 'px';
+  canvas.style.height = window.innerHeight + 'px';
+}
+resize();
+window.addEventListener('resize', resize);
+
+let prog, resLoc, timeLoc, mouseLoc, c3Loc, c4Loc;
+if (gl) {
+  const vsSrc = `attribute vec2 a_position; varying vec2 v_uv; void main() { v_uv = a_position * 0.5 + 0.5; gl_Position = vec4(a_position, 0.0, 1.0); }`;
+  const fsSrc = `
+    precision highp float;
+    uniform vec2 u_resolution; uniform float u_time; uniform vec2 u_mouse; uniform vec3 u_c3; uniform vec3 u_c4;
+    varying vec2 v_uv;
+    float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float noise(vec2 p) {
+      vec2 i = floor(p); vec2 f = fract(p); f = f*f*(3.0-2.0*f);
+      return mix(mix(hash(i), hash(i+vec2(1.0,0.0)), f.x), mix(hash(i+vec2(0.0,1.0)), hash(i+vec2(1.0,1.0)), f.x), f.y);
+    }
+    float fbm(vec2 p) { float s=0.0,a=0.5,f=1.0; for(int i=0;i<6;i++){s+=noise(p*f)*a;a*=0.5;f*=2.0;} return s; }
+    void main() {
+      vec2 uv = v_uv; vec2 p = (uv*2.0-1.0); p.x *= u_resolution.x/u_resolution.y;
+      float t = u_time * 0.07;
+      vec2 mUV = u_mouse*2.0-1.0; mUV.x *= u_resolution.x/u_resolution.y;
+      float md = distance(p, mUV);
+      vec2 mFlow = (p - mUV) * exp(-md*2.5) * 0.3;
+      vec2 q = vec2(fbm(p+t+mFlow), fbm(p+t+vec2(5.2,1.3)+mFlow));
+      vec2 r = vec2(fbm(p+q+vec2(1.7,9.2)+t*0.5), fbm(p+q+vec2(8.3,2.8)+t*0.5));
+      float f = fbm(p+r*1.2);
+      vec3 c1 = vec3(0.02, 0.02, 0.02);
+      vec3 c2 = vec3(0.05, 0.05, 0.05);
+      vec3 col = mix(c1, c2, smoothstep(0.0, 0.6, f));
+      col = mix(col, u_c4*0.5, smoothstep(0.5, 0.85, f) * 0.35);
+      col = mix(col, u_c3, smoothstep(0.65, 0.95, length(r)) * 0.3);
+      col += u_c3 * exp(-md*4.0) * 0.15;
+      float vig = 1.0 - smoothstep(0.5, 1.4, length(uv*2.0-1.0));
+      col *= vig * 0.82 + 0.18;
+      col += hash(uv*u_resolution+u_time) * 0.03 - 0.015;
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `;
+  function compile(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
+  prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, vsSrc));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fsSrc));
+  gl.linkProgram(prog); gl.useProgram(prog);
+  const posLoc = gl.getAttribLocation(prog, 'a_position');
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(posLoc);
+  gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+  resLoc = gl.getUniformLocation(prog, 'u_resolution');
+  timeLoc = gl.getUniformLocation(prog, 'u_time');
+  mouseLoc = gl.getUniformLocation(prog, 'u_mouse');
+  c3Loc = gl.getUniformLocation(prog, 'u_c3');
+  c4Loc = gl.getUniformLocation(prog, 'u_c4');
+  
+  window.updateShaderColors = (theme) => {
+    const colors = themeColors[theme] || themeColors.mono;
+    gl.useProgram(prog);
+    gl.uniform3fv(c3Loc, colors.c3);
+    gl.uniform3fv(c4Loc, colors.c4);
+  };
+  updateShaderColors(currentTheme);
+
+  const start = performance.now();
+  let smX = 0.5, smY = 0.5;
+  function render() {
+    if (!running) { requestAnimationFrame(render); return; }
+    const t = (performance.now() - start) / 1000;
+    smX += (mouseX - smX) * 0.035; smY += (mouseY - smY) * 0.035;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.uniform2f(resLoc, canvas.width, canvas.height);
+    gl.uniform1f(timeLoc, t);
+    gl.uniform2f(mouseLoc, smX, smY);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    requestAnimationFrame(render);
+  }
+  render();
+  window.addEventListener('mousemove', e => { mouseX = e.clientX / window.innerWidth; mouseY = 1.0 - e.clientY / window.innerHeight; });
+  document.addEventListener('visibilitychange', () => { running = !document.hidden; });
+} else {
+  canvas.style.background = 'radial-gradient(ellipse at 30% 20%, rgba(50,50,50,0.4) 0%, rgba(5,5,5,1) 70%)';
+}
+
+const CHARS = '!<>-_\\/[]{}—=+*^?#________01';
+const heroTitle = document.getElementById('hero-title');
+const TARGET = 'ALL TOOLS ZACK';
+function scramble() {
+  let iter = 0;
+  const max = TARGET.length * 8;
+  heroTitle.classList.add('is-decoding');
+  (function tick() {
+    heroTitle.textContent = TARGET.split('').map((ch, i) => i < iter / 8 ? TARGET[i] : CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
+    iter += 1;
+    if (iter >= max) { heroTitle.textContent = TARGET; heroTitle.classList.remove('is-decoding'); return; }
+    setTimeout(tick, 45);
+  })();
+}
+
+const enterObs = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); enterObs.unobserve(e.target); } });
+}, { threshold: 0.15 });
+document.querySelectorAll('.headline-enter').forEach(el => enterObs.observe(el));
+
+const settingsOverlay = document.getElementById('settings-overlay');
+
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const nav = btn.dataset.nav;
+    if (nav === 'home') {
+      document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
+    } else if (nav === 'download') {
+      document.getElementById('tools').scrollIntoView({ behavior: 'smooth' });
+      document.querySelector('.filter-tab[data-cat="downloader"]').click();
+    } else if (nav === 'setting') {
+      settingsOverlay.classList.add('active');
+    }
+  });
+});
+
+document.getElementById('settings-close').addEventListener('click', () => {
+  settingsOverlay.classList.remove('active');
+});
+
+window.addEventListener('scroll', () => {
+  let current = 'home';
+  if (window.scrollY > document.getElementById('tools').offsetTop - 200) current = 'download';
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.nav === current);
+  });
+});
+
+const tools = [
+  { id: '01', name: 'Instagram Downloader', cat: 'downloader', catLabel: 'DOWNLOADER', icon: 'fa-brands fa-instagram', desc: 'Download video, foto, reel, dan story Instagram tanpa watermark.', render: () => dlTemplate('instagram') },
+  { id: '02', name: 'TikTok Downloader', cat: 'downloader', catLabel: 'DOWNLOADER', icon: 'fa-brands fa-tiktok', desc: 'Download video TikTok tanpa watermark, kualitas HD, langsung dari URL.', render: () => dlTemplate('tiktok') },
+  { id: '03', name: 'YouTube Downloader', cat: 'downloader', catLabel: 'DOWNLOADER', icon: 'fa-brands fa-youtube', desc: 'Download video YouTube ke MP4 (SD/HD) atau konversi ke MP3 audio.', render: () => dlTemplate('youtube') },
+  { id: '04', name: 'Facebook Downloader', cat: 'downloader', catLabel: 'DOWNLOADER', icon: 'fa-brands fa-facebook', desc: 'Download video Facebook HD/SD format MP4 secara cepat.', render: () => dlTemplate('facebook') },
+  { id: '05', name: 'Twitter Downloader', cat: 'downloader', catLabel: 'DOWNLOADER', icon: 'fa-brands fa-x-twitter', desc: 'Download video Twitter/X dalam format MP4 kualitas tinggi.', render: () => dlTemplate('twitter') },
+  { id: '06', name: 'Terabox Downloader', cat: 'downloader', catLabel: 'DOWNLOADER', icon: 'fa-solid fa-cloud', desc: 'Download file video dari link Terabox langsung tanpa aplikasi.', render: () => dlTemplate('terabox') },
+  
+  { 
+    id: '07', name: 'File to Link Converter', cat: 'upload', catLabel: 'UPLOAD', icon: 'fa-solid fa-link', desc: 'Unggah foto, video, atau musik untuk diubah menjadi link berbagi langsung.', 
+    render: () => `
+      <div class="tool-field">
+        <label class="tool-label">Upload File (Max 50MB)</label>
+        <div class="img-dropzone" id="upl-dropzone" onclick="document.getElementById('upl-file').click()" style="border: 2px dashed var(--ink-trace); padding: 2rem; text-align: center; cursor: pointer; border-radius: 8px;">
+          Click or drag file here (Foto/Video/Musik)
+          <input type="file" id="upl-file" style="display:none;" onchange="window.handleFileSelect(this.files[0])">
+        </div>
+      </div>
+      <button class="tool-btn" onclick="window.uploadFile()" id="upl-btn">Generate Link</button>
+      <div class="dl-result" id="upl-result" style="margin-top: 1rem;"></div>
+    `,
+    init: () => {
+      const dz = document.getElementById('upl-dropzone');
+      window.selectedFile = null;
+      window.handleFileSelect = function(file) {
+        if (!file) return;
+        window.selectedFile = file;
+        dz.style.borderColor = 'var(--neon-cyan)';
+        dz.innerText = `File dipilih: ${file.name} (${window.formatBytes(file.size)})`;
+      };
+      dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--neon-cyan)'; });
+      dz.addEventListener('dragleave', () => dz.style.borderColor = 'var(--ink-trace)');
+      dz.addEventListener('drop', e => {
+        e.preventDefault(); dz.style.borderColor = 'var(--ink-trace)';
+        if (e.dataTransfer.files[0]) window.handleFileSelect(e.dataTransfer.files[0]);
+      });
+    } 
+  },
+
+  { 
+    id: '08', name: 'Password Generator', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-key', desc: 'Generate password aman menggunakan crypto.getRandomValues.', 
+    render: () => `
+      <div class="tool-field"><label class="tool-label">Length: <span id="pw-len-val">20</span> chars</label><input type="range" id="pw-len" min="6" max="64" value="20" class="tool-input" style="padding:0;"></div>
+      <div class="tool-field"><div class="tool-row" style="gap:1rem;"><label class="tool-checkbox"><input type="checkbox" id="pw-upper" checked>Uppercase</label><label class="tool-checkbox"><input type="checkbox" id="pw-lower" checked>Lowercase</label><label class="tool-checkbox"><input type="checkbox" id="pw-num" checked>Numbers</label><label class="tool-checkbox"><input type="checkbox" id="pw-sym" checked>Symbols</label></div></div>
+      <div class="tool-field"><label class="tool-label">Output</label><div class="tool-output" id="pw-out">click generate</div></div>
+      <button class="tool-btn" onclick="window.genPw()">Generate</button><button class="tool-btn secondary" onclick="window.copyEl('pw-out')">Copy</button>
+    `,
+    init: () => {
+      const len = document.getElementById('pw-len'); const val = document.getElementById('pw-len-val');
+      len.addEventListener('input', () => val.textContent = len.value);
+      window.genPw();
+    } 
+  },
+  { id: '09', name: 'Base64 Encode / Decode', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-code', desc: 'Konversi teks ke dan dari Base64. Aman untuk UTF-8.', render: () => `
+      <div class="tool-field"><label class="tool-label">Input</label><textarea class="tool-textarea" id="b64-input" placeholder="Type or paste text..."></textarea></div>
+      <div class="tool-row" style="margin-bottom:1.25rem;"><button class="tool-btn" onclick="window.b64Enc()">Encode</button><button class="tool-btn" onclick="window.b64Dec()">Decode</button></div>
+      <div class="tool-field"><label class="tool-label">Output</label><div class="tool-output" id="b64-out">—</div></div>
+      <button class="tool-btn secondary" onclick="window.copyEl('b64-out')">Copy output</button>
+  ` },
+  { id: '10', name: 'SHA Hash Generator', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-hashtag', desc: 'SHA-1, SHA-256, SHA-384, SHA-512 melalui Web Crypto API.', render: () => `
+      <div class="tool-field"><label class="tool-label">Input text</label><textarea class="tool-textarea" id="hash-input" placeholder="Text to hash..."></textarea></div>
+      <div class="tool-field"><label class="tool-label">Algorithm</label><select class="tool-select" id="hash-algo"><option value="SHA-1">SHA-1</option><option value="SHA-256" selected>SHA-256</option><option value="SHA-384">SHA-384</option><option value="SHA-512">SHA-512</option></select></div>
+      <button class="tool-btn" onclick="window.genHash()">Generate hash</button>
+      <div class="tool-field" style="margin-top:1.25rem;"><label class="tool-label">Hash digest (hex)</label><div class="tool-output" id="hash-out">—</div></div>
+      <button class="tool-btn secondary" onclick="window.copyEl('hash-out')">Copy hash</button>
+  ` },
+  { id: '11', name: 'UUID Generator', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-fingerprint', desc: 'RFC 4122 v4 UUID menggunakan crypto.randomUUID.', render: () => `
+      <div class="tool-field"><label class="tool-label">Count: <span id="uuid-count-val">5</span></label><input type="range" id="uuid-count" min="1" max="50" value="5" class="tool-input" style="padding:0;"></div>
+      <button class="tool-btn" onclick="window.genUuid()">Generate</button><button class="tool-btn secondary" onclick="window.copyEl('uuid-out')">Copy all</button>
+      <div class="tool-field" style="margin-top:1.25rem;"><label class="tool-label">Generated UUIDs</label><div class="tool-output" id="uuid-out" style="min-height:100px;">—</div></div>
+    `, init: () => {
+      const c = document.getElementById('uuid-count'); const v = document.getElementById('uuid-count-val');
+      c.addEventListener('input', () => v.textContent = c.value);
+      window.genUuid();
+    } },
+  { id: '12', name: 'JWT Decoder', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-unlock', desc: 'Decode JSON Web Token. Tampilkan header dan payload.', render: () => `
+      <div class="tool-field"><label class="tool-label">JWT Token</label><textarea class="tool-textarea" id="jwt-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." style="min-height:100px;"></textarea></div>
+      <button class="tool-btn" onclick="window.jwtDecode()">Decode</button>
+      <div class="tool-field" style="margin-top:1.25rem;"><label class="tool-label">Header</label><div class="tool-output" id="jwt-header" style="min-height:60px;white-space:pre-wrap;">—</div></div>
+      <div class="tool-field"><label class="tool-label">Payload</label><div class="tool-output" id="jwt-payload" style="min-height:80px;white-space:pre-wrap;">—</div></div>
+  ` },
+  
+  { id: '13', name: 'Word & Char Counter', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-text-width', desc: 'Hitung kata, karakter, kalimat, dan estimasi waktu baca.', render: () => `
+      <div class="tool-field"><label class="tool-label">Text</label><textarea class="tool-textarea" id="count-input" placeholder="Paste text..." style="min-height:160px;"></textarea></div>
+      <div class="tool-row" style="gap:1rem; margin-top:1rem;"><div class="tool-output" style="flex:1; text-align:center;">Words: <b id="cnt-words">0</b></div><div class="tool-output" style="flex:1; text-align:center;">Chars: <b id="cnt-chars">0</b></div><div class="tool-output" style="flex:1; text-align:center;">Read: <b id="cnt-read">0s</b></div></div>
+    `, init: () => {
+      const input = document.getElementById('count-input');
+      input.addEventListener('input', () => {
+        const t = input.value;
+        const words = t.trim() ? t.trim().split(/\s+/).length : 0;
+        document.getElementById('cnt-words').textContent = words;
+        document.getElementById('cnt-chars').textContent = t.length;
+        const sec = Math.ceil(words / 3.5);
+        document.getElementById('cnt-read').textContent = sec < 60 ? sec + 's' : Math.floor(sec/60) + 'm';
+      });
+    } },
+  { id: '14', name: 'Case Converter', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-font', desc: 'UPPER, lower, Title, camelCase, snake_case, kebab-case.', render: () => `
+      <div class="tool-field"><label class="tool-label">Input</label><textarea class="tool-textarea" id="case-input" placeholder="Type text..."></textarea></div>
+      <div class="tool-row" style="margin-bottom:1.25rem;gap:0.35rem;"><button class="tool-btn secondary" onclick="window.convertCase('upper')">UPPER</button><button class="tool-btn secondary" onclick="window.convertCase('lower')">lower</button><button class="tool-btn secondary" onclick="window.convertCase('title')">Title</button><button class="tool-btn secondary" onclick="window.convertCase('camel')">camelCase</button><button class="tool-btn secondary" onclick="window.convertCase('snake')">snake_case</button><button class="tool-btn secondary" onclick="window.convertCase('kebab')">kebab-case</button></div>
+      <div class="tool-field"><label class="tool-label">Output</label><div class="tool-output" id="case-out">—</div></div>
+      <button class="tool-btn secondary" onclick="window.copyEl('case-out')">Copy output</button>
+  ` },
+  { id: '15', name: 'Lorem Ipsum Generator', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-feather', desc: 'Teks placeholder gaya Latin klasik. Paragraf, kalimat, kata.', render: () => `
+      <div class="tool-field"><label class="tool-label">Type</label><select class="tool-select" id="lorem-type"><option value="paragraphs">Paragraphs</option><option value="sentences">Sentences</option><option value="words">Words</option></select></div>
+      <div class="tool-field"><label class="tool-label">Count: <span id="lorem-count-val">3</span></label><input type="range" id="lorem-count" min="1" max="20" value="3" class="tool-input" style="padding:0;"></div>
+      <button class="tool-btn" onclick="window.genLorem()">Generate</button><button class="tool-btn secondary" onclick="window.copyEl('lorem-out')">Copy</button>
+      <div class="tool-field" style="margin-top:1.25rem;"><label class="tool-label">Output</label><div class="tool-output" id="lorem-out" style="min-height:120px;white-space:pre-wrap;">—</div></div>
+    `, init: () => {
+      const c = document.getElementById('lorem-count'); const v = document.getElementById('lorem-count-val');
+      c.addEventListener('input', () => v.textContent = c.value);
+    } },
+  { id: '16', name: 'Text to Speech', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-volume-high', desc: 'Konversi teks ke suara menggunakan Web Speech API.', render: () => `
+      <div class="tool-field"><label class="tool-label">Text to speak</label><textarea class="tool-textarea" id="tts-input" placeholder="Type text...">Halo, ini adalah ALL TOOLS ZACK.</textarea></div>
+      <div class="tool-field"><label class="tool-label">Language</label><select class="tool-select" id="tts-lang"><option value="id-ID">Indonesia</option><option value="en-US">English (US)</option><option value="ja-JP">Japan</option></select></div>
+      <button class="tool-btn" onclick="window.ttsSpeak()">▶ Speak</button><button class="tool-btn secondary" onclick="window.ttsStop()">■ Stop</button>
+  ` },
+  { id: '17', name: 'Markdown Previewer', cat: 'text', catLabel: 'TEXT', icon: 'fa-brands fa-markdown', desc: 'Preview live Markdown: heading, list, link, code, bold.', render: () => `
+      <div class="tool-row" style="align-items:flex-start;gap:1rem;"><div style="flex:1;min-width:0;"><label class="tool-label">Markdown</label><textarea class="tool-textarea" id="md-input" style="min-height:280px;">## Hello World\n\n**bold** *italic*</textarea></div><div style="flex:1;min-width:0;"><label class="tool-label">Preview</label><div id="md-preview" style="min-height:280px;padding:1rem;background:var(--void-black);border:1px solid var(--ink-trace);color:var(--ink-soft);line-height:1.6;overflow-y:auto;font-size:0.88rem;border-radius:8px;"></div></div></div>
+    `, init: () => {
+      const input = document.getElementById('md-input'); const preview = document.getElementById('md-preview');
+      function renderMd() {
+        let md = input.value;
+        md = md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        md = md.replace(/^### (.*$)/gm, '<h3 style="color:#fff;font-size:1rem;margin:0.5rem 0;font-family:Inter;">$1</h3>');
+        md = md.replace(/^## (.*$)/gm, '<h2 style="color:#fff;font-size:1.2rem;margin:0.7rem 0;font-family:Inter;">$1</h2>');
+        md = md.replace(/^# (.*$)/gm, '<h1 style="color:#fff;font-size:1.4rem;margin:0.9rem 0;font-family:Inter;">$1</h1>');
+        md = md.replace(/\*\*(.+?)\*\*/g, '<strong style="color:#fff;">$1</strong>');
+        md = md.replace(/\*(.+?)\*/g, '<em>$1</em>');
+        md = md.replace(/\n/g, '<br>');
+        preview.innerHTML = md;
+      }
+      input.addEventListener('input', renderMd); renderMd();
+    } },
+
+  { id: '18', name: 'JSON Formatter', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-brackets-curly', desc: 'Pretty-print, minify, dan validasi JSON.', render: () => `
+      <div class="tool-field"><label class="tool-label">Input JSON</label><textarea class="tool-textarea" id="json-input" style="min-height:140px;">{"name":"alltoolszack","version":"v7.5"}</textarea></div>
+      <div class="tool-row" style="margin-bottom:1.25rem;"><button class="tool-btn" onclick="window.jsonFormat(2)">Beautify</button><button class="tool-btn" onclick="window.jsonFormat(0)">Minify</button></div>
+      <div class="tool-field"><label class="tool-label">Output</label><div class="tool-output" id="json-out" style="min-height:100px;white-space:pre-wrap;">—</div></div>
+  ` },
+  { id: '19', name: 'URL Encode / Decode', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-globe', desc: 'Percent-encoding untuk URL dan query param.', render: () => `
+      <div class="tool-field"><label class="tool-label">Input</label><textarea class="tool-textarea" id="url-input" placeholder="https://example.com?q=hello world"></textarea></div>
+      <div class="tool-row" style="margin-bottom:1.25rem;"><button class="tool-btn" onclick="window.urlEnc()">Encode</button><button class="tool-btn" onclick="window.urlDec()">Decode</button></div>
+      <div class="tool-field"><label class="tool-label">Output</label><div class="tool-output" id="url-out">—</div></div>
+  ` },
+  { id: '20', name: 'Color Converter', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-palette', desc: 'Konversi HEX, RGB, HSL dengan preview swatch live.', render: () => `
+      <div class="tool-field"><label class="tool-label">HEX</label><input type="text" class="tool-input" id="color-hex" value="#ffffff" oninput="window.colorFromHex()"></div>
+      <div class="tool-field"><label class="tool-label">RGB</label><input type="text" class="tool-input" id="color-rgb" value="rgb(255, 255, 255)" oninput="window.colorFromRGB()"></div>
+      <div class="tool-field"><label class="tool-label">Preview</label><div id="color-preview" style="width:100%;height:70px;background:#ffffff;border-radius:8px;"></div></div>
+    `, init: () => window.colorFromHex() },
+  { id: '21', name: 'Unit Converter', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-ruler', desc: 'Panjang, berat, suhu. Metrik dan imperial.', render: () => `
+      <div class="tool-field"><label class="tool-label">Category</label><select class="tool-select" id="unit-cat" onchange="window.updateUnits()"><option value="length">Length</option><option value="weight">Weight</option><option value="temperature">Temperature</option></select></div>
+      <div class="tool-row"><input type="number" class="tool-input" id="unit-from" value="1" oninput="window.convertUnit()" style="flex:1;"><select class="tool-select" id="unit-from-type" onchange="window.convertUnit()" style="flex:1;"></select></div>
+      <div style="text-align:center;margin:0.75rem 0;font-family:JetBrains Mono;color:var(--neon-cyan);font-size:1.1rem;">↓</div>
+      <div class="tool-row"><input type="number" class="tool-input" id="unit-to" readonly style="flex:1;"><select class="tool-select" id="unit-to-type" onchange="window.convertUnit()" style="flex:1;"></select></div>
+    `, init: () => { window.updateUnits(); window.convertUnit(); } },
+  { id: '22', name: 'Image Compressor', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-image', desc: 'Kompres gambar di sisi klien. Atur kualitas, lihat before/after.', render: () => `
+      <div class="tool-field"><label class="tool-label">Upload Image</label><div class="img-dropzone" id="iqc-dropzone" onclick="document.getElementById('iqc-file').click()" style="border: 2px dashed var(--ink-trace); padding: 2rem; text-align: center; cursor: pointer; border-radius: 8px;">Click or drag image here<input type="file" id="iqc-file" accept="image/*" style="display:none;" onchange="window.iqcHandleFile(this.files[0])"></div></div>
+      <div class="tool-field"><label class="tool-label">Quality: <span id="iqc-q-val">60</span>%</label><input type="range" id="iqc-quality" min="5" max="100" value="60" oninput="document.getElementById('iqc-q-val').textContent=this.value;window.iqcCompress()" style="padding:0;"></div>
+      <div id="iqc-preview"></div>
+    `, init: () => {
+      const dz = document.getElementById('iqc-dropzone');
+      dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--neon-cyan)'; });
+      dz.addEventListener('dragleave', () => dz.style.borderColor = 'var(--ink-trace)');
+      dz.addEventListener('drop', e => { e.preventDefault(); dz.style.borderColor = 'var(--ink-trace)'; if (e.dataTransfer.files[0]) window.iqcHandleFile(e.dataTransfer.files[0]); });
+    } },
+  { id: '23', name: 'Base64 Image Converter', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-clone', desc: 'Konversi gambar ke string Base64 untuk embed inline.', render: () => `
+      <div class="tool-field"><label class="tool-label">Upload Image</label><div class="img-dropzone" id="b64img-dropzone" onclick="document.getElementById('b64img-file').click()" style="border: 2px dashed var(--ink-trace); padding: 2rem; text-align: center; cursor: pointer; border-radius: 8px;">Click or drag image here<input type="file" id="b64img-file" accept="image/*" style="display:none;" onchange="window.b64imgHandle(this.files[0])"></div></div>
+      <div id="b64img-preview"></div>
+      <div class="tool-field"><label class="tool-label">Base64 String Output</label><textarea class="tool-textarea" id="b64img-out" placeholder="Base64 string will appear here..." style="min-height:100px;" readonly></textarea></div>
+      <button class="tool-btn secondary" onclick="window.copyEl('b64img-out')">Copy Base64</button>
+    `, init: () => {
+      const dz = document.getElementById('b64img-dropzone');
+      dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--neon-cyan)'; });
+      dz.addEventListener('dragleave', () => dz.style.borderColor = 'var(--ink-trace)');
+      dz.addEventListener('drop', e => { e.preventDefault(); dz.style.borderColor = 'var(--ink-trace)'; if (e.dataTransfer.files[0]) window.b64imgHandle(e.dataTransfer.files[0]); });
+    } },
+  { id: '24', name: 'Image Color Picker', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-eye-dropper', desc: 'Upload gambar, klik untuk pick warna pixel.', render: () => `
+      <div class="tool-field"><label class="tool-label">Upload Image</label><div class="img-dropzone" id="cp-dropzone" onclick="document.getElementById('cp-file').click()" style="border: 2px dashed var(--ink-trace); padding: 2rem; text-align: center; cursor: pointer; border-radius: 8px;">Click or drag image here<input type="file" id="cp-file" accept="image/*" style="display:none;" onchange="window.cpHandle(this.files[0])"></div></div>
+      <div id="cp-canvas-wrap" style="display:none;margin-bottom:1rem;"><canvas id="cp-canvas" style="max-width:100%;cursor:crosshair;border-radius:8px;"></canvas></div>
+      <div class="tool-field"><label class="tool-label">Picked Color</label><div class="tool-row"><div id="cp-swatch" style="width:50px;height:38px;background:var(--void-card);border-radius:8px;"></div><div class="tool-output" id="cp-result" style="flex:1;">click image</div></div></div>
+    `, init: () => {
+      const dz = document.getElementById('cp-dropzone');
+      dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--neon-cyan)'; });
+      dz.addEventListener('dragleave', () => dz.style.borderColor = 'var(--ink-trace)');
+      dz.addEventListener('drop', e => { e.preventDefault(); dz.style.borderColor = 'var(--ink-trace)'; if (e.dataTransfer.files[0]) window.cpHandle(e.dataTransfer.files[0]); });
+    } },
+
+  { id: '25', name: 'BMI Calculator', cat: 'calc', catLabel: 'CALC', icon: 'fa-solid fa-weight-scale', desc: 'Body Mass Index dengan metrik dan imperial.', render: () => `
+      <div class="tool-field"><label class="tool-label">Weight (kg)</label><input type="number" class="tool-input" id="bmi-weight" value="70"></div>
+      <div class="tool-field"><label class="tool-label">Height (cm)</label><input type="number" class="tool-input" id="bmi-height" value="175"></div>
+      <button class="tool-btn" onclick="window.calcBmi()">Calculate</button>
+      <div class="tool-field" style="margin-top:1.25rem;"><div class="tool-output" id="bmi-out">—</div></div>
+  ` },
+  { id: '26', name: 'Age Calculator', cat: 'calc', catLabel: 'CALC', icon: 'fa-solid fa-calendar-days', desc: 'Hitung umur tepat dalam tahun, bulan, hari.', render: () => `
+      <div class="tool-field"><label class="tool-label">Birth date</label><input type="date" class="tool-input" id="age-birth"></div>
+      <div class="tool-field"><label class="tool-label">Calculate to</label><input type="date" class="tool-input" id="age-target"></div>
+      <button class="tool-btn" onclick="window.calcAge()">Calculate</button>
+      <div class="tool-field" style="margin-top:1.25rem;"><div class="tool-output" id="age-out">—</div></div>
+    `, init: () => { document.getElementById('age-target').value = new Date().toISOString().split('T')[0]; } },
+
+  { id: '27', name: 'QR Code Generator', cat: 'generate', catLabel: 'GENERATE', icon: 'fa-solid fa-qrcode', desc: 'Generate QR code untuk URL, teks. Download PNG.', render: () => `
+      <div class="tool-field"><label class="tool-label">Content</label><textarea class="tool-textarea" id="qr-input" oninput="window.genQR()">https://alltoolszack.dev</textarea></div>
+      <div style="text-align:center;margin-top:1.25rem;"><canvas id="qr-canvas" style="background:#fff;padding:0.75rem;max-width:100%;border-radius:8px;"></canvas></div>
+      <div style="text-align:center;margin-top:1rem;"><button class="tool-btn secondary" onclick="window.downloadQR()">Download PNG</button></div>
+    `, init: () => window.genQR() },
+  { id: '28', name: 'CSS Gradient Generator', cat: 'generate', catLabel: 'GENERATE', icon: 'fa-solid fa-fill-drip', desc: 'Buat gradient CSS visual dengan multiple stops.', render: () => `
+      <div class="tool-field"><label class="tool-label">Preview</label><div id="grad-preview" style="width:100%;height:120px;background:linear-gradient(90deg,#ffffff,#a855f7);border-radius:8px;margin-bottom:1rem;"></div></div>
+      <div class="tool-row" style="margin-bottom:1.25rem;"><input type="color" id="grad-c1" value="#ffffff" oninput="window.gradUpdate()" style="width:50px;height:38px;background:none;border:1px solid var(--ink-trace);cursor:pointer;border-radius:8px;"><input type="color" id="grad-c2" value="#a855f7" oninput="window.gradUpdate()" style="width:50px;height:38px;background:none;border:1px solid var(--ink-trace);cursor:pointer;border-radius:8px;"></div>
+      <div class="tool-field"><label class="tool-label">CSS Code</label><div class="tool-output" id="grad-code">—</div></div>
+      <button class="tool-btn secondary" onclick="window.copyEl('grad-code')">Copy CSS</button>
+    `, init: () => window.gradUpdate() },
+  { id: '29', name: 'Fake Data Generator', cat: 'generate', catLabel: 'GENERATE', icon: 'fa-solid fa-user-secret', desc: 'Generate dummy data: nama, email, nomor telepon, alamat.', render: () => `
+      <button class="tool-btn" onclick="window.genFakeData()">Generate Data</button><button class="tool-btn secondary" onclick="window.copyEl('fake-out')">Copy</button>
+      <div class="tool-field" style="margin-top:1.25rem;"><div class="tool-output" id="fake-out" style="min-height:150px;white-space:pre-wrap;">—</div></div>
+  ` }
+];
+
+function dlTemplate(platform) {
+  const placeholders = {
+    instagram: 'https://www.instagram.com/reel/...',
+    tiktok: 'https://www.tiktok.com/@user/video/...',
+    youtube: 'https://www.youtube.com/watch?v=...',
+    facebook: 'https://www.facebook.com/watch?v=...',
+    twitter: 'https://twitter.com/user/status/...',
+    terabox: 'https://teraboxapp.com/s/...'
+  };
+  return `
+    <div class="tool-field"><label class="tool-label">Paste ${platform} URL</label><input type="text" class="tool-input" id="dl-url" placeholder="${placeholders[platform] || 'Paste URL here...'}"></div>
+    <button class="tool-btn" onclick="window.fetchDownload('${platform}')"><i class="fa-solid fa-download"></i> Download</button>
+    <button class="tool-btn secondary" onclick="window.clearDownloader()"><i class="fa-solid fa-eraser"></i> Clear</button>
+    <div class="dl-result" id="dl-result"></div>
+  `;
+}
+
+const grid = document.getElementById('tools-grid');
+tools.forEach(t => {
+  const card = document.createElement('div');
+  card.className = 'tool-card';
+  card.dataset.cat = t.cat;
+  card.innerHTML = `
+    <div class="tool-card-top"><div class="tool-icon"><i class="${t.icon}"></i></div><div class="tool-cat">${t.catLabel}</div></div>
+    <h3 class="tool-name">${t.name}</h3><p class="tool-desc">${t.desc}</p><div class="tool-arrow"><span>Open Tool</span><span>↗</span></div>
+  `;
+  card.addEventListener('click', () => openTool(t));
+  grid.appendChild(card);
+});
+
+function revealTools() {
+  const cards = document.querySelectorAll('.tool-card');
+  const obs = new IntersectionObserver(es => {
+    es.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('in'), i * 40); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  cards.forEach(c => obs.observe(c));
+}
+
+const filterTabs = document.querySelectorAll('.filter-tab');
+filterTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const cat = tab.dataset.cat;
+    filterTabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.tool-card').forEach(card => { card.classList.toggle('hidden', cat !== 'all' && card.dataset.cat !== cat); });
+  });
+});
+
+const overlay = document.getElementById('modal-overlay');
+const modal = document.getElementById('modal');
+
+function openTool(t) {
+  document.getElementById('modal-label').textContent = `// TOOL ${t.id}`;
+  document.getElementById('modal-title').textContent = t.name;
+  document.getElementById('modal-icon').innerHTML = `<i class="${t.icon}"></i>`;
+  document.getElementById('modal-body').innerHTML = t.render();
+  overlay.classList.add('active'); modal.classList.add('active'); document.body.style.overflow = 'hidden';
+  if (t.init) setTimeout(t.init, 50);
+}
+
+function closeModal() { overlay.classList.remove('active'); modal.classList.remove('active'); document.body.style.overflow = ''; }
+overlay.addEventListener('click', closeModal);
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); settingsOverlay.classList.remove('active'); } });
+
+window.copyEl = function(id) { const text = document.getElementById(id).textContent; if (!text || text === '—' || text === 'click generate') return; navigator.clipboard.writeText(text); }
+window.formatBytes = function(bytes) { if (bytes < 1024) return bytes + ' B'; if (bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB'; return (bytes/1048576).toFixed(2) + ' MB'; }
+window.clearDownloader = function() { document.getElementById('dl-url').value = ''; document.getElementById('dl-result').innerHTML = ''; }
+
+window.uploadFile = async function() {
+  if (!window.selectedFile) { document.getElementById('upl-result').innerHTML = `<div class="tool-output" style="color:#ff5555;">Pilih file terlebih dahulu.</div>`; return; }
+  if (window.selectedFile.size > 50 * 1024 * 1024) { document.getElementById('upl-result').innerHTML = `<div class="tool-output" style="color:#ff5555;">Ukuran file melebihi 50MB.</div>`; return; }
+  document.getElementById('upl-result').innerHTML = `<div class="tool-output">Sedang mengunggah... mohon tunggu.</div>`;
+  const btn = document.getElementById('upl-btn'); btn.disabled = true; btn.style.opacity = 0.5;
+  const formData = new FormData(); formData.append('file', window.selectedFile);
+  try {
+    const res = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: formData });
+    const json = await res.json();
+    if (json.status === 'success') {
+      const directUrl = json.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+      document.getElementById('upl-result').innerHTML = `<div class="dl-card"><div class="dl-info"><div class="dl-title">Upload Berhasil!</div><div class="dl-meta">File: ${window.selectedFile.name}</div><div class="tool-output" id="upl-link">${directUrl}</div><div style="margin-top: 1rem;"><a href="${directUrl}" target="_blank" class="tool-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Link</a><button class="tool-btn secondary" onclick="window.copyEl('upl-link')"><i class="fa-solid fa-copy"></i> Copy Link</button></div></div></div>`;
+    } else { throw new Error('Gagal upload'); }
+  } catch (error) {
+    document.getElementById('upl-result').innerHTML = `<div class="tool-output" style="color:#ff5555;">Error: ${error.message}. API upload mungkin sedang down.</div>`;
+  } finally { btn.disabled = false; btn.style.opacity = 1; }
+}
+
+function getYouTubeId(url) { const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([\w-]{11})/); return m ? m[1] : ''; }
+
+window.fetchDownload = async function(platform) {
+  const url = document.getElementById('dl-url').value.trim();
+  const resultDiv = document.getElementById('dl-result');
+  if (!url) { resultDiv.innerHTML = `<div class="tool-output" style="color:#ff5555;">URL tidak boleh kosong.</div>`; return; }
+  
+  resultDiv.innerHTML = `<div class="tool-output">Menghubungi server, mohon tunggu...</div>`;
+  
+  let apiUrl = '';
+  // API tioxy.uk untuk YT, IG, FB, Twitter, Terabox
+  if (platform === 'youtube') apiUrl = `https://api.tioxy.uk/api/ytdl?url=${encodeURIComponent(url)}`;
+  else if (platform === 'instagram') apiUrl = `https://api.tioxy.uk/api/igdl?url=${encodeURIComponent(url)}`;
+  else if (platform === 'facebook') apiUrl = `https://api.tioxy.uk/api/fbdl?url=${encodeURIComponent(url)}`;
+  else if (platform === 'twitter') apiUrl = `https://api.tioxy.uk/api/twitter?url=${encodeURIComponent(url)}`;
+  else if (platform === 'terabox') apiUrl = `https://api.tioxy.uk/api/terabox?url=${encodeURIComponent(url)}`;
+  
+  // API tikwm untuk TikTok (CORS-friendly, tanpa proxy)
+  if (platform === 'tiktok') {
+    try {
+      const res = await fetch(`https://tikwm.com/api/?url=${encodeURIComponent(url)}`);
+      const json = await res.json();
+      if (json.code !== 0) throw new Error('Gagal mengambil data TikTok');
+      const d = json.data;
+      resultDiv.innerHTML = `
+        <div class="dl-card">
+          ${d.cover ? `<img src="${d.cover}" class="dl-thumb">` : ''}
+          <div class="dl-info">
+            <div class="dl-title">${d.title || 'TikTok Video'}</div>
+            <div class="dl-meta">Author: ${d.author?.nickname || 'Unknown'}</div>
+            <div class="dl-links">
+              <a href="${d.play}" target="_blank" class="tool-btn"><i class="fa-solid fa-video"></i> MP4 HD</a>
+              <a href="${d.wmplay}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-video"></i> MP4 WM</a>
+              <a href="${d.music}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-music"></i> MP3</a>
+            </div>
+          </div>
+        </div>`;
+      return;
+    } catch (error) {
+      resultDiv.innerHTML = `
+        <div class="tool-output" style="color:#ff5555; margin-bottom: 1rem;">Server API TikTok bermasalah. Gunakan tombol cadangan:</div>
+        <a href="https://snaptik.app/?url=${encodeURIComponent(url)}" target="_blank" class="tool-btn" style="background: var(--neon-cyan); color: var(--void-black); border: none;"><i class="fa-solid fa-up-right-from-square"></i> Buka SnapTik</a>`;
+      return;
+    }
+  }
+
+  const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(apiUrl);
+
+  try {
+    const res = await fetch(proxyUrl);
+    if (!res.ok) throw new Error('Server tidak merespons');
+    const json = await res.json();
+    
+    let html = '';
+    const data = json.result || json.data;
+    
+    if (platform === 'youtube') {
+      html += `<div class="dl-card">`;
+      if (data.thumbnail) html += `<img src="${data.thumbnail}" class="dl-thumb">`;
+      html += `<div class="dl-info">
+        <div class="dl-title">${data.title || 'YouTube Video'}</div>
+        <div class="dl-meta">Duration: ${data.duration || '-'}</div>
+        <div class="dl-links">`;
+      if (data.mp4 && data.mp4.length > 0) { data.mp4.forEach(m => { html += `<a href="${m.url}" target="_blank" class="tool-btn"><i class="fa-solid fa-video"></i> MP4 ${m.quality}p</a>`; }); }
+      if (data.mp3 && data.mp3.url) { html += `<a href="${data.mp3.url}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-music"></i> MP3 Audio</a>`; }
+      html += `</div></div></div>`;
+    }
+    else if (platform === 'instagram') {
+      html += `<div class="dl-card"><div class="dl-info">`;
+      if (Array.isArray(data.url)) { data.url.forEach(u => { if (typeof u === 'string') html += `<a href="${u}" target="_blank" class="tool-btn"><i class="fa-solid fa-download"></i> Download Media</a>`; else if (u.url) html += `<a href="${u.url}" target="_blank" class="tool-btn"><i class="fa-solid fa-download"></i> Download ${u.type ? u.type.toUpperCase() : 'Media'}</a>`; }); }
+      else if (data.url) { html += `<a href="${data.url}" target="_blank" class="tool-btn"><i class="fa-solid fa-download"></i> Download Media</a>`; }
+      html += `</div></div>`;
+    }
+    else if (platform === 'terabox' || platform === 'facebook' || platform === 'twitter') {
+      html += `<div class="dl-card">`;
+      if (data.thumbnail) html += `<img src="${data.thumbnail}" class="dl-thumb">`;
+      html += `<div class="dl-info">
+        <div class="dl-title">${data.title || platform + ' Media'}</div>
+        <div class="dl-links">`;
+      if (data.link) html += `<a href="${data.link}" target="_blank" class="tool-btn"><i class="fa-solid fa-download"></i> Download File</a>`;
+      if (data.HD) html += `<a href="${data.HD}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-high-definition"></i> HD</a>`;
+      if (data.SD) html += `<a href="${data.SD}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-standard-definition"></i> SD</a>`;
+      html += `</div></div></div>`;
+    }
+    
+    if (!html) throw new Error('Format tidak dikenali');
+    resultDiv.innerHTML = html;
+  } catch (error) {
+    let fallbackUrl = '';
+    if (platform === 'youtube') fallbackUrl = `https://ssyoutube.com/watch?v=${getYouTubeId(url)}`;
+    else if (platform === 'instagram') fallbackUrl = `https://snapinsta.app/?url=${encodeURIComponent(url)}`;
+    else if (platform === 'facebook') fallbackUrl = `https://snapsave.app/?url=${encodeURIComponent(url)}`;
+    else if (platform === 'twitter') fallbackUrl = `https://ssstwitter.com/?url=${encodeURIComponent(url)}`;
+    else if (platform === 'terabox') fallbackUrl = `https://teradownloader.com/?url=${encodeURIComponent(url)}`;
+
+    resultDiv.innerHTML = `
+      <div class="tool-output" style="color:#ff5555; margin-bottom: 1rem;">Server API sedang sibuk/down. Gunakan tombol cadangan di bawah untuk tetap mendownload:</div>
+      <a href="${fallbackUrl}" target="_blank" class="tool-btn" style="background: var(--neon-cyan); color: var(--void-black); border: none;"><i class="fa-solid fa-up-right-from-square"></i> Buka Web Downloader Cadangan</a>`;
+  }
+}
+
+window.genPw = function() { const len = +document.getElementById('pw-len').value; let cs = ''; if (document.getElementById('pw-upper').checked) cs += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; if (document.getElementById('pw-lower').checked) cs += 'abcdefghijklmnopqrstuvwxyz'; if (document.getElementById('pw-num').checked) cs += '0123456789'; if (document.getElementById('pw-sym').checked) cs += '!@#$%^&*()-_=+[]{};:,.<>?'; if (!cs) return; const arr = new Uint32Array(len); crypto.getRandomValues(arr); let pw = ''; for (let i = 0; i < len; i++) pw += cs[arr[i] % cs.length]; document.getElementById('pw-out').textContent = pw; }
+window.b64Enc = function() { try { document.getElementById('b64-out').textContent = btoa(unescape(encodeURIComponent(document.getElementById('b64-input').value))); } catch(e) { document.getElementById('b64-out').textContent = 'Error'; } }
+window.b64Dec = function() { try { document.getElementById('b64-out').textContent = decodeURIComponent(escape(atob(document.getElementById('b64-input').value.trim()))); } catch(e) { document.getElementById('b64-out').textContent = 'Error invalid Base64'; } }
+window.genHash = async function() { const t = document.getElementById('hash-input').value; const algo = document.getElementById('hash-algo').value; if (!t) return; const buf = await crypto.subtle.digest(algo, new TextEncoder().encode(t)); document.getElementById('hash-out').textContent = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join(''); }
+window.genUuid = function() { const n = +document.getElementById('uuid-count').value; const out = []; for (let i = 0; i < n; i++) out.push(crypto.randomUUID()); document.getElementById('uuid-out').textContent = out.join('\n'); }
+window.jwtDecode = function() { const token = document.getElementById('jwt-input').value.trim(); if (!token) return; const parts = token.split('.'); if (parts.length !== 3) { document.getElementById('jwt-header').textContent = 'Invalid JWT'; return; } try { const decodeB64 = (s) => decodeURIComponent(escape(atob(s.replace(/-/g, '+').replace(/_/g, '/')))); document.getElementById('jwt-header').textContent = JSON.stringify(JSON.parse(decodeB64(parts[0])), null, 2); document.getElementById('jwt-payload').textContent = JSON.stringify(JSON.parse(decodeB64(parts[1])), null, 2); } catch(e) { document.getElementById('jwt-header').textContent = 'Error: ' + e.message; } }
+window.convertCase = function(type) { const t = document.getElementById('case-input').value; if (!t) return; let out = ''; switch(type) { case 'upper': out = t.toUpperCase(); break; case 'lower': out = t.toLowerCase(); break; case 'title': out = t.replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase()); break; case 'camel': out = t.toLowerCase().replace(/[^a-z0-9]+(.)/g, (_, c) => c.toUpperCase()); break; case 'snake': out = t.replace(/\s+/g,'_').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/,'').replace(/__/g,'_'); break; case 'kebab': out = t.replace(/\s+/g,'-').replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/,'').replace(/--/g,'-'); break; } document.getElementById('case-out').textContent = out; }
+const LOREM_WORDS = 'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat duis aute irure in reprehenderit voluptate velit esse cillum eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt culpa qui officia deserunt mollit anim id est laborum'.split(' ');
+window.genLorem = function() { const type = document.getElementById('lorem-type').value; const n = +document.getElementById('lorem-count').value; let out = []; if (type === 'words') { const w = []; for (let i = 0; i < n; i++) w.push(LOREM_WORDS[Math.floor(Math.random()*LOREM_WORDS.length)]); out = [w.join(' ')]; } else if (type === 'sentences') { for (let i = 0; i < n; i++) { const wc = 6 + Math.floor(Math.random()*12); const w = []; for (let j = 0; j < wc; j++) w.push(LOREM_WORDS[Math.floor(Math.random()*LOREM_WORDS.length)]); let s = w.join(' '); s = s[0].toUpperCase() + s.slice(1) + '.'; out.push(s); } } else { for (let i = 0; i < n; i++) { const sc = 3 + Math.floor(Math.random()*4); const sents = []; for (let j = 0; j < sc; j++) { const wc = 6 + Math.floor(Math.random()*12); const w = []; for (let k = 0; k < wc; k++) w.push(LOREM_WORDS[Math.floor(Math.random()*LOREM_WORDS.length)]); let s = w.join(' '); s = s[0].toUpperCase() + s.slice(1) + '.'; sents.push(s); } out.push(sents.join(' ')); } } document.getElementById('lorem-out').textContent = out.join('\n\n'); }
+window.ttsSpeak = function() { const text = document.getElementById('tts-input').value; if ('speechSynthesis' in window) { speechSynthesis.cancel(); const utter = new SpeechSynthesisUtterance(text); utter.lang = document.getElementById('tts-lang').value; speechSynthesis.speak(utter); } }
+window.ttsStop = function() { if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+window.jsonFormat = function(indent) { try { document.getElementById('json-out').textContent = JSON.stringify(JSON.parse(document.getElementById('json-input').value), null, indent); } catch(e) { document.getElementById('json-out').textContent = '✗ Error: ' + e.message; } }
+window.urlEnc = function() { document.getElementById('url-out').textContent = encodeURIComponent(document.getElementById('url-input').value); }
+window.urlDec = function() { try { document.getElementById('url-out').textContent = decodeURIComponent(document.getElementById('url-input').value); } catch(e) { document.getElementById('url-out').textContent = 'Error invalid URI'; } }
+window.colorFromHex = function() { const hex = document.getElementById('color-hex').value.replace('#',''); if (!/^[0-9a-f]{6}$/i.test(hex)) return; const r = parseInt(hex.slice(0,2),16), g = parseInt(hex.slice(2,4),16), b = parseInt(hex.slice(4,6),16); document.getElementById('color-rgb').value = `rgb(${r}, ${g}, ${b})`; document.getElementById('color-preview').style.background = '#' + hex; }
+window.colorFromRGB = function() { const m = document.getElementById('color-rgb').value.match(/(\d+)/g); if (!m || m.length < 3) return; const [r,g,b] = m.map(Number); if (r>255||g>255||b>255) return; document.getElementById('color-hex').value = '#' + [r,g,b].map(n => n.toString(16).padStart(2,'0')).join('').toUpperCase(); document.getElementById('color-preview').style.background = `rgb(${r},${g},${b})`; }
+const UNITS = { length: { meter:1, kilometer:1000, centimeter:0.01, millimeter:0.001, mile:1609.344, yard:0.9144, foot:0.3048, inch:0.0254 }, weight: { kilogram:1, gram:0.001, milligram:0.000001, metric_ton:1000, pound:0.45359237, ounce:0.028349523125 }, temperature: { celsius:'c', fahrenheit:'f', kelvin:'k' } };
+window.updateUnits = function() { const cat = document.getElementById('unit-cat').value; const fs = document.getElementById('unit-from-type'); const ts = document.getElementById('unit-to-type'); fs.innerHTML = ''; ts.innerHTML = ''; Object.keys(UNITS[cat]).forEach(u => { fs.appendChild(new Option(u.replace(/_/g,' '), u)); ts.appendChild(new Option(u.replace(/_/g,' '), u)); }); if (cat === 'length') { fs.value = 'meter'; ts.value = 'foot'; } else if (cat === 'weight') { fs.value = 'kilogram'; ts.value = 'pound'; } else { fs.value = 'celsius'; ts.value = 'fahrenheit'; } window.convertUnit(); }
+window.convertUnit = function() { const cat = document.getElementById('unit-cat').value; const v = +document.getElementById('unit-from').value; const from = document.getElementById('unit-from-type').value; const to = document.getElementById('unit-to-type').value; if (isNaN(v)) return; let result; if (cat === 'temperature') { let c; if (from === 'celsius') c = v; else if (from === 'fahrenheit') c = (v - 32) * 5/9; else c = v - 273.15; if (to === 'celsius') result = c; else if (to === 'fahrenheit') result = c * 9/5 + 32; else result = c + 273.15; } else { result = v * UNITS[cat][from] / UNITS[cat][to]; } document.getElementById('unit-to').value = +result.toFixed(6); }
+let iqcOriginalImg = null, iqcOriginalSize = 0;
+window.iqcHandleFile = function(file) { if (!file || !file.type.startsWith('image/')) return; iqcOriginalSize = file.size; const reader = new FileReader(); reader.onload = e => { const img = new Image(); img.onload = () => { iqcOriginalImg = img; window.iqcCompress(); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
+window.iqcCompress = function() { if (!iqcOriginalImg) return; const quality = +document.getElementById('iqc-quality').value / 100; const canvas = document.createElement('canvas'); canvas.width = iqcOriginalImg.naturalWidth; canvas.height = iqcOriginalImg.naturalHeight; const ctx = canvas.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.drawImage(iqcOriginalImg, 0, 0); const dataUrl = canvas.toDataURL('image/jpeg', quality); const newSize = Math.round((dataUrl.length - dataUrl.indexOf(',') - 1) * 3 / 4); const ratio = ((1 - newSize / iqcOriginalSize) * 100).toFixed(1); document.getElementById('iqc-preview').innerHTML = `<div class="tool-row" style="margin-bottom:1rem;"><div style="flex:1;text-align:center;"><img src="${iqcOriginalImg.src}" style="max-width:100%;max-height:150px;border-radius:8px;"><div class="tool-label" style="margin-top:0.5rem;">Original · ${window.formatBytes(iqcOriginalSize)}</div></div><div style="flex:1;text-align:center;"><img src="${dataUrl}" style="max-width:100%;max-height:150px;border-radius:8px;"><div class="tool-label" style="margin-top:0.5rem;">Compressed · ${window.formatBytes(newSize)}</div></div></div><div class="tool-output">Reduction: ${ratio}% smaller</div><a href="${dataUrl}" download="compressed.jpg" class="tool-btn" style="margin-top:1rem;"><i class="fa-solid fa-download"></i> Download</a>`; }
+window.b64imgHandle = function(file) { if (!file || !file.type.startsWith('image/')) return; const reader = new FileReader(); reader.onload = e => { const dataUrl = e.target.result; document.getElementById('b64img-out').value = dataUrl; document.getElementById('b64img-preview').innerHTML = `<img src="${dataUrl}" style="max-width:100%;max-height:150px;border-radius:8px;margin-bottom:1rem;">`; }; reader.readAsDataURL(file); }
+window.cpHandle = function(file) { if (!file || !file.type.startsWith('image/')) return; const reader = new FileReader(); reader.onload = e => { const img = new Image(); img.onload = () => { const cv = document.getElementById('cp-canvas'); const wrap = document.getElementById('cp-canvas-wrap'); const maxW = 600; const scale = Math.min(1, maxW / img.naturalWidth); cv.width = img.naturalWidth * scale; cv.height = img.naturalHeight * scale; const ctx = cv.getContext('2d'); ctx.drawImage(img, 0, 0, cv.width, cv.height); wrap.style.display = 'block'; cv.onclick = ev => { const rect = cv.getBoundingClientRect(); const x = Math.floor((ev.clientX - rect.left) * (cv.width / rect.width)); const y = Math.floor((ev.clientY - rect.top) * (cv.height / rect.height)); const pixel = ctx.getImageData(x, y, 1, 1).data; const hex = '#' + [pixel[0],pixel[1],pixel[2]].map(n => n.toString(16).padStart(2,'0')).join('').toUpperCase(); document.getElementById('cp-swatch').style.background = hex; document.getElementById('cp-result').textContent = `HEX: ${hex}\nRGB: rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`; }; }; img.src = e.target.result; }; reader.readAsDataURL(file); }
+window.calcBmi = function() { const w = +document.getElementById('bmi-weight').value; const h = +document.getElementById('bmi-height').value; if (!w || !h) return; const bmi = w / Math.pow(h/100, 2); let cat = ''; if (bmi < 18.5) cat = 'Underweight'; else if (bmi < 25) cat = 'Normal weight'; else if (bmi < 30) cat = 'Overweight'; else cat = 'Obese'; document.getElementById('bmi-out').textContent = `BMI: ${bmi.toFixed(2)} — ${cat}`; }
+window.calcAge = function() { const b = document.getElementById('age-birth').value; const t = document.getElementById('age-target').value; if (!b || !t) return; const bd = new Date(b), td = new Date(t); if (td < bd) return; let y = td.getFullYear() - bd.getFullYear(); let m = td.getMonth() - bd.getMonth(); let d = td.getDate() - bd.getDate(); if (d < 0) { m--; d += new Date(td.getFullYear(), td.getMonth(), 0).getDate(); } if (m < 0) { y--; m += 12; } document.getElementById('age-out').textContent = `${y} years, ${m} months, ${d} days`; }
+window.genQR = function() { const text = document.getElementById('qr-input').value || ' '; const cv = document.getElementById('qr-canvas'); if (typeof QRCode === 'undefined') { setTimeout(window.genQR, 200); return; } QRCode.toCanvas(cv, text, { width: 240, margin: 1, color: { dark: '#050505', light: '#ffffff' } }, () => {}); }
+window.downloadQR = function() { const link = document.createElement('a'); link.download = 'qrcode.png'; link.href = document.getElementById('qr-canvas').toDataURL(); link.click(); }
+window.gradUpdate = function() { const c1 = document.getElementById('grad-c1').value; const c2 = document.getElementById('grad-c2').value; const css = `linear-gradient(90deg, ${c1}, ${c2})`; document.getElementById('grad-preview').style.background = css; document.getElementById('grad-code').textContent = `background: ${css};`; }
+window.genFakeData = function() { const names = ['Andi Wijaya', 'Budi Santoso', 'Citra Lestari', 'Dewi Anggraini', 'Eka Pratama', 'Fajar Nugroho']; const domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'mail.com']; const name = names[Math.floor(Math.random()*names.length)]; const email = name.toLowerCase().replace(' ', '.') + Math.floor(Math.random()*100) + '@' + domains[Math.floor(Math.random()*domains.length)]; const phone = '+62' + Math.floor(1000000000 + Math.random()*9000000000); const address = 'Jl. ' + names[Math.floor(Math.random()*names.length)].split(' ')[0] + ' No.' + Math.floor(Math.random()*100) + ', Jakarta'; document.getElementById('fake-out').textContent = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nAddress: ${address}`; }
+</script>
+</body>
+</html>
