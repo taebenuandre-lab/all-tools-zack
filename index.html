@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<link rel="icon" type="image/png" href="icon.png">
-<link rel="manifest" href="manifest.json">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ALL TOOLS ZACK — Premium Toolkit</title>
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#050505">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;700;800;900&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
   --void-black: #050505; --void-dark: #0d0d0d; --void-card: #141414;
@@ -56,7 +59,6 @@ body.theme-cyber .pre-bar-fill, body.theme-blackhole .pre-bar-fill { box-shadow:
 #fluid-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; transition: opacity 400ms var(--ease-quiet); }
 .grid-overlay { position: fixed; inset: 0; z-index: 1; pointer-events: none; background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%); -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%); }
 .content { position: relative; z-index: 2; }
-
 nav.top-nav { position: fixed; top: 0; left: 0; right: 0; padding: 1rem 1.5rem; z-index: 100; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); background: rgba(5,5,5,0.8); border-bottom: 1px solid var(--ink-trace); transition: background 400ms var(--ease-quiet); }
 body.theme-cyber nav.top-nav { background: rgba(11,11,18,0.8); } body.theme-blackhole nav.top-nav { background: rgba(0,0,0,0.9); }
 .nav-brand { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
@@ -93,7 +95,6 @@ section { padding: 4rem 1.5rem; position: relative; }
 .filter-tab span { font-size: 0.55rem; color: var(--ink-faint); }
 .filter-tab:hover { color: var(--ink-soft); } .filter-tab.active { color: var(--neon-cyan); } .filter-tab.active span { color: var(--neon-cyan); }
 .filter-tab.active::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px; background: var(--neon-cyan); }
-
 .tools-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
 .tool-card { background: var(--void-card); padding: 1.2rem; cursor: pointer; transition: all 400ms var(--ease-quiet); position: relative; overflow: hidden; min-height: 180px; display: flex; flex-direction: column; border: 1px solid var(--ink-trace); border-radius: 12px; opacity: 0; transform: translateY(20px); }
 .tool-card.in { opacity: 1; transform: none; transition: opacity 600ms var(--ease-quiet), transform 600ms var(--ease-quiet), background 400ms var(--ease-quiet), border-color 400ms var(--ease-quiet); }
@@ -160,14 +161,12 @@ body.theme-cyber .modal-icon, body.theme-blackhole .modal-icon { background: rgb
 .theme-name { font-weight: 700; color: #fff; font-size: 0.9rem; }
 .theme-btn { padding: 0.5rem 1rem; border: 1px solid var(--ink-trace); background: transparent; color: var(--ink-soft); border-radius: 8px; cursor: pointer; font-family: 'JetBrains Mono'; font-size: 0.65rem; font-weight: 700; transition: all 0.3s; }
 .theme-btn.active { background: var(--neon-cyan); color: var(--void-black); border-color: var(--neon-cyan); }
-
 .info-row { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--ink-trace); }
 .info-row:last-child { border-bottom: none; padding-bottom: 0; }
 .info-label { color: var(--ink-mute); font-size: 0.85rem; }
 .info-value { color: #fff; font-size: 0.85rem; font-weight: 700; }
 .status-active { color: #10b981; display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 0.85rem; }
 .status-active::before { content: ''; width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981; }
-
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
 .contact-btn { padding: 0.8rem; border-radius: 8px; text-decoration: none; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.8rem; transition: transform 0.2s; }
 .contact-btn:hover { transform: scale(1.03); }
@@ -181,16 +180,61 @@ body.theme-cyber .bottom-nav { background: rgba(11,11,18,0.95); } body.theme-bla
 .nav-btn.active { color: var(--neon-cyan); }
 .nav-btn svg { width: 22px; height: 22px; stroke-width: 1.5; }
 .nav-btn span { font-size: 0.6rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.1em; }
-
 .music-toggle { position: fixed; bottom: 90px; right: 1.5rem; background: var(--void-card); border: 1px solid var(--ink-trace); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 150; color: var(--neon-cyan); transition: all 0.3s; }
 .music-toggle:hover { background: var(--neon-cyan); color: var(--void-black); }
 .music-toggle svg { width: 18px; height: 18px; }
 
 footer { padding: 3rem 1.5rem 2rem; border-top: 1px solid var(--ink-trace); position: relative; text-align: center; }
 .footer-bottom { max-width: 1200px; margin: 0 auto; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--ink-faint); letter-spacing: 0.05em; }
-
 .headline-enter { opacity: 0; transform: translateY(40px); transition: opacity 1200ms var(--ease-quiet), transform 1200ms var(--ease-quiet); will-change: transform, opacity; }
 .headline-enter.is-in { opacity: 1; transform: none; }
+
+/* Custom UI Elements */
+.wa-screen { max-width: 100%; margin: 1rem auto 0; background: #0b141a; border-radius: 12px; overflow: hidden; border: 1px solid #2a3942; display: flex; flex-direction: column; height: 450px; }
+.wa-header { background: #202c33; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 0.8rem; border-bottom: 1px solid #2a3942; }
+.wa-header .wa-back { color: #aebac1; font-size: 1rem; cursor: pointer; }
+.wa-header .wa-dp { width: 34px; height: 34px; border-radius: 50%; background: #6a7175; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; font-size: 0.9rem; }
+.wa-header .wa-name { color: #e9edef; font-size: 1rem; font-weight: 500; font-family: 'Inter', sans-serif; flex: 1; margin: 0; }
+.wa-header .wa-icons { color: #aebac1; font-size: 1.1rem; display: flex; gap: 1.2rem; }
+.wa-chat-area { flex: 1; padding: 1rem; overflow-y: auto; background-color: #0b141a; display: flex; flex-direction: column; }
+.wa-bubble-wrap { position: relative; margin-bottom: 1.5rem; display: flex; max-width: 85%; }
+.wa-bubble-wrap.sender { justify-content: flex-end; margin-left: auto; }
+.wa-bubble-wrap.receiver { justify-content: flex-start; margin-right: auto; }
+.wa-bubble { padding: 0.4rem 0.6rem 0.6rem; border-radius: 8px; font-size: 0.9rem; font-family: 'Inter', sans-serif; color: #e9edef; position: relative; box-shadow: 0 1px 0.5px rgba(11,20,26,0.13); min-width: 100px; }
+.wa-bubble-wrap.sender .wa-bubble { background: #005c4b; border-top-right-radius: 0; }
+.wa-bubble-wrap.receiver .wa-bubble { background: #202c33; border-top-left-radius: 0; }
+.wa-bubble .wa-time { font-size: 0.65rem; color: #e9edef; float: right; margin-top: 0.4rem; margin-left: 0.5rem; opacity: 0.6; display: flex; align-items: center; gap: 3px; }
+.wa-emojis { position: absolute; top: -15px; right: 15px; background: #233138; border-radius: 20px; padding: 0.2rem 0.5rem; display: flex; gap: 0.4rem; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 2; }
+.wa-emojis span { font-size: 0.8rem; }
+.wa-popup { position: absolute; top: 100%; right: 10px; margin-top: 5px; background: #233138; border-radius: 8px; padding: 0.3rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 10; width: 160px; }
+.wa-popup span { color: #e9edef; font-size: 0.8rem; padding: 0.5rem 1rem; cursor: pointer; display: block; }
+.wa-popup span:hover { background: #182229; }
+
+.pass-bar-bg { width: 100%; height: 8px; background: var(--void-card); border-radius: 4px; margin-top: 0.5rem; overflow: hidden; }
+.pass-bar-fill { height: 100%; width: 0%; transition: width 0.3s, background-color 0.3s; border-radius: 4px; }
+
+.pomodoro-display { text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 4rem; font-weight: 700; color: var(--neon-cyan); margin: 1rem 0 2rem; letter-spacing: -0.05em; }
+.pomodoro-status { text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--ink-mute); margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.15em; }
+
+/* AI Center FAB & Chat */
+.fab-container { position: fixed; bottom: 90px; right: 1.5rem; z-index: 160; }
+.fab-btn { width: 56px; height: 56px; background: var(--neon-cyan); color: var(--void-black); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: grab; box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: transform 0.3s; user-select: none; touch-action: none; }
+.fab-btn:active { cursor: grabbing; transform: scale(1.1); }
+
+.ai-chat-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 250; display: none; align-items: center; justify-content: center; padding: 1rem; }
+.ai-chat-overlay.active { display: flex; }
+.ai-chat-window { width: 100%; max-width: 400px; height: 80vh; max-height: 600px; background: var(--void-dark); border: 1px solid var(--ink-trace); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
+.ai-chat-header { padding: 1rem; background: var(--void-card); border-bottom: 1px solid var(--ink-trace); display: flex; justify-content: space-between; align-items: center; }
+.ai-chat-title { font-family: 'Inter', sans-serif; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; color: var(--neon-cyan); }
+.ai-chat-close { background: transparent; border: none; color: var(--ink-soft); font-size: 1.2rem; cursor: pointer; }
+.ai-chat-body { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.8rem; }
+.chat-bubble { padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.85rem; max-width: 90%; font-family: 'Inter', sans-serif; line-height: 1.4; white-space: pre-wrap; }
+.chat-bubble.user { background: var(--neon-cyan); color: var(--void-black); align-self: flex-end; border-bottom-right-radius: 0; }
+.chat-bubble.ai { background: var(--void-card); color: var(--ink-soft); align-self: flex-start; border-bottom-left-radius: 0; border: 1px solid var(--ink-trace); }
+.typing-indicator { background: var(--void-card); color: var(--ink-mute); align-self: flex-start; border-bottom-left-radius: 0; border: 1px solid var(--ink-trace); font-style: italic; opacity: 0.7; }
+.ai-chat-input { padding: 1rem; background: var(--void-card); border-top: 1px solid var(--ink-trace); display: flex; gap: 0.5rem; }
+.ai-chat-input input { flex: 1; background: var(--void-black); border: 1px solid var(--ink-trace); color: #fff; padding: 0.6rem 1rem; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.85rem; outline: none; }
+.ai-chat-input button { background: var(--neon-cyan); color: var(--void-black); border: none; padding: 0 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem; }
 
 @media (max-width: 768px) {
   .hero { padding: 6rem 1rem 3rem; min-height: 80vh; }
@@ -199,6 +243,7 @@ footer { padding: 3rem 1.5rem 2rem; border-top: 1px solid var(--ink-trace); posi
   .tools-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; } .tool-card { padding: 1rem; min-height: 160px; }
   .nav-btn { padding: 0.5rem 1rem; } .music-toggle { bottom: 80px; right: 1rem; }
   .contact-grid { grid-template-columns: 1fr; }
+  .fab-container { bottom: 80px; right: 1rem; }
 }
 </style>
 </head>
@@ -212,7 +257,7 @@ footer { padding: 3rem 1.5rem 2rem; border-top: 1px solid var(--ink-trace); posi
       <path class="z" d="M 28 32 L 72 32 L 28 68 L 72 68"/><circle class="dot" cx="88" cy="12" r="3"/>
     </svg>
     <div class="pre-name">ALL TOOLS <span>ZACK</span></div>
-    <div class="pre-tag">Premium Toolkit · v7.5</div>
+    <div class="pre-tag">Premium Toolkit · v15.0</div>
     <div class="pre-bar-wrap"><div class="pre-bar-track"><div class="pre-bar-fill" id="pre-bar-fill"></div></div><div class="pre-meta"><span class="pre-status" id="pre-status">INITIALIZING</span><span class="pre-pct" id="pre-pct">00%</span></div></div>
     <div class="pre-log" id="pre-log"></div>
   </div>
@@ -220,7 +265,31 @@ footer { padding: 3rem 1.5rem 2rem; border-top: 1px solid var(--ink-trace); posi
 
 <canvas id="fluid-canvas"></canvas>
 <div class="grid-overlay"></div>
-<audio id="bg-music" loop><source src="https://files.catbox.moe/asbkzp.mp3" type="audio/mpeg"></audio>
+<audio id="bg-music" loop><source src="https://cdn.jsdelivr.net/gh/anars/blank-audio@master/10-minutes-of-silence.mp3" type="audio/mpeg"></audio>
+
+<!-- AI Center FAB -->
+<div class="fab-container" id="fab-container">
+  <div class="fab-btn" id="fab-main" title="AI Center">
+    <i class="fa-solid fa-robot"></i>
+  </div>
+</div>
+
+<!-- AI Chat Overlay -->
+<div class="ai-chat-overlay" id="ai-chat-overlay">
+  <div class="ai-chat-window">
+    <div class="ai-chat-header">
+      <div class="ai-chat-title"><i class="fa-solid fa-robot"></i> AI Center</div>
+      <button class="ai-chat-close" onclick="window.closeAIChat()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="ai-chat-body" id="ai-chat-body">
+      <div class="chat-bubble ai">Halo! Saya AI Center ZACK. Ketik nama tool yang kamu butuh (misal "youtube", "qr code", "password") atau tanyakan apa saja padaku!</div>
+    </div>
+    <div class="ai-chat-input">
+      <input type="text" id="ai-input" placeholder="Ketik pesan..." onkeydown="if(event.key==='Enter')window.sendAIMessage()">
+      <button onclick="window.sendAIMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
 
 <div class="content">
   <nav class="top-nav">
@@ -230,30 +299,30 @@ footer { padding: 3rem 1.5rem 2rem; border-top: 1px solid var(--ink-trace); posi
 
   <section class="hero" id="home">
     <div class="hero-banner" id="hero-banner"></div>
-    <div class="hero-label">PREMIUM TOOLKIT · 29 UTILITIES</div>
+    <div class="hero-label">PREMIUM TOOLKIT · 40 UTILITIES</div>
     <h1 id="hero-title">ALL TOOLS ZACK</h1>
-    <p class="hero-sub">Satu platform berisi 29 utilitas siap pakai. Downloader tanpa watermark, kompresor gambar, generator QR, upload file ke link, kriptografi — semua berjalan cepat, gratis, tanpa iklan mengganggu.</p>
+    <p class="hero-sub">Satu platform berisi 40 utilitas siap pakai. Downloader tanpa watermark, kompresor gambar, Image to PDF, Pomodoro Timer, Fake WA Chat, AI Center (Real AI), dan tools canggih lainnya — semua berjalan cepat, gratis, tanpa iklan mengganggu.</p>
   </section>
 
   <section id="tools">
     <div class="section-head"><div class="section-label">CATALOG</div><h2 class="section-title headline-enter">Semua Tools</h2></div>
     <div class="filter-tabs" id="filter-tabs">
-      <button class="filter-tab active" data-cat="all">All <span>29</span></button>
-      <button class="filter-tab" data-cat="downloader">Downloader <span>6</span></button>
+      <button class="filter-tab active" data-cat="all">All <span>40</span></button>
+      <button class="filter-tab" data-cat="downloader">Downloader <span>7</span></button>
       <button class="filter-tab" data-cat="upload">Upload <span>1</span></button>
-      <button class="filter-tab" data-cat="crypto">Crypto <span>5</span></button>
-      <button class="filter-tab" data-cat="text">Text <span>5</span></button>
-      <button class="filter-tab" data-cat="convert">Convert <span>7</span></button>
+      <button class="filter-tab" data-cat="image">Image <span>3</span></button>
+      <button class="filter-tab" data-cat="crypto">Crypto <span>6</span></button>
+      <button class="filter-tab" data-cat="text">Text <span>8</span></button>
+      <button class="filter-tab" data-cat="convert">Convert <span>8</span></button>
       <button class="filter-tab" data-cat="calc">Calc <span>2</span></button>
-      <button class="filter-tab" data-cat="generate">Generate <span>3</span></button>
+      <button class="filter-tab" data-cat="generate">Generate <span>2</span></button>
+      <button class="filter-tab" data-cat="utility">Utility <span>3</span></button>
     </div>
     <div class="tools-grid" id="tools-grid"></div>
   </section>
 
   <footer>
-    <div class="footer-bottom">
-      © 2025 ALL TOOLS ZACK — Premium Multi-Page Edition
-    </div>
+    <div class="footer-bottom">© 2025 ALL TOOLS ZACK — Premium PWA Edition</div>
   </footer>
 </div>
 
@@ -262,10 +331,7 @@ footer { padding: 3rem 1.5rem 2rem; border-top: 1px solid var(--ink-trace); posi
   <div class="modal-header">
     <div class="modal-header-left">
       <div class="modal-icon" id="modal-icon"><i class="fa-solid fa-cube"></i></div>
-      <div>
-        <div class="modal-label" id="modal-label">TOOL</div>
-        <div class="modal-title" id="modal-title">Tool</div>
-      </div>
+      <div><div class="modal-label" id="modal-label">TOOL</div><div class="modal-title" id="modal-title">Tool</div></div>
     </div>
     <button class="modal-close" id="modal-close">×</button>
   </div>
@@ -288,15 +354,15 @@ footer { padding: 3rem 1.5rem 2rem; border-top: 1px solid var(--ink-trace); posi
     <div class="settings-card">
       <h3>Hubungi Developer</h3>
       <div class="contact-grid">
-        <a href="https://wa.me/6282318109918" target="_blank" class="contact-btn wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.247-.694.247-1.289.173-1.413z"/></svg> WhatsApp</a>
-        <a href="https://t.me/zackXdkk" target="_blank" class="contact-btn tg"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.324-.437.891-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg> Telegram</a>
+        <a href="https://wa.me/6281234567890" target="_blank" class="contact-btn wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.247-.694.247-1.289.173-1.413z"/></svg> WhatsApp</a>
+        <a href="https://t.me/username_tele" target="_blank" class="contact-btn tg"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.324-.437.891-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg> Telegram</a>
       </div>
     </div>
     
     <div class="settings-card">
       <h3>Informasi Sistem</h3>
       <div class="info-row"><span class="info-label">Nama Aplikasi</span><span class="info-value">ALL TOOLS BY ZACK</span></div>
-      <div class="info-row"><span class="info-label">Versi</span><span class="info-value">v7.5 (Premium Multi - Page)</span></div>
+      <div class="info-row"><span class="info-label">Versi</span><span class="info-value">v15.0 (Premium PWA Edition)</span></div>
       <div class="info-row"><span class="info-label">Status</span><span class="status-active">Aktif & Stabil</span></div>
     </div>
   </div>
@@ -309,285 +375,83 @@ footer { padding: 3rem 1.5rem 2rem; border-top: 1px solid var(--ink-trace); posi
 <nav class="bottom-nav">
   <button class="nav-btn active" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12l9-9 9 9M5 10v10h4v-6h6v6h4V10" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Home</span></button>
   <button class="nav-btn" data-nav="download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Download</span></button>
-  <button class="nav-btn" data-nav="setting"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Setting</span></button>
+  <button class="nav-btn" data-nav="setting"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1-2-2 2 2 0 0 1-2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Setting</span></button>
 </nav>
 
 <script>
-const themeColors = {
-  mono: { c3: [1.0, 1.0, 1.0], c4: [0.8, 0.8, 0.8] },
-  cyber: { c3: [0.66, 0.33, 0.97], c4: [0.55, 0.26, 0.86] },
-  blackhole: { c3: [0.62, 0.31, 0.87], c4: [0.78, 0.49, 1.0] }
-};
+let clickSoundCtx;
+function playClickSound() {
+  try {
+    if (!clickSoundCtx) clickSoundCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = clickSoundCtx.createOscillator();
+    const gain = clickSoundCtx.createGain();
+    osc.connect(gain);
+    gain.connect(clickSoundCtx.destination);
+    osc.type = 'sine';
+    osc.frequency.value = 1200;
+    gain.gain.setValueAtTime(0.08, clickSoundCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, clickSoundCtx.currentTime + 0.03);
+    osc.start(clickSoundCtx.currentTime);
+    osc.stop(clickSoundCtx.currentTime + 0.03);
+  } catch(e) {}
+}
+document.addEventListener('click', e => {
+  if (e.target.closest('.tool-btn, .nav-btn, .tool-card, .modal-close, .theme-btn, .filter-tab, .contact-btn, .wa-back, .wa-header .wa-icons i, .wa-popup span, .fab-btn, .ai-chat-close, .ai-chat-input button')) {
+    playClickSound();
+  }
+});
 
-const themeBanners = {
-  mono: "https://files.catbox.moe/6s7klz.mp4", 
-  cyber: "https://files.catbox.moe/wdqsmq.mp4", 
-  blackhole: "https://files.catbox.moe/h5ehs7.mp4"  
-};
-
+const themeColors = { mono: { c3: [1.0, 1.0, 1.0], c4: [0.8, 0.8, 0.8] }, cyber: { c3: [0.66, 0.33, 0.97], c4: [0.55, 0.26, 0.86] }, blackhole: { c3: [0.62, 0.31, 0.87], c4: [0.78, 0.49, 1.0] } };
+const themeBanners = { mono: "https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif", cyber: "https://media.giphy.com/media/l0HlGEhZGzVyWQ5Pa/giphy.gif", blackhole: "https://media.giphy.com/media/U3qYN8UJFlLCY/giphy.gif" };
 let currentTheme = localStorage.getItem('zack-theme') || 'mono';
 
-function loadBanner() {
-  const url = themeBanners[currentTheme] || themeBanners.mono;
-  const container = document.getElementById('hero-banner');
-  if (!container) return;
-  if (url.match(/\.(mp4|webm)$/i)) {
-    container.innerHTML = `<video src="${url}" autoplay loop muted playsinline class="banner-media"></video><div class="banner-overlay"></div>`;
-  } else {
-    container.innerHTML = `<img src="${url}" alt="Banner" class="banner-media"><div class="banner-overlay"></div>`;
-  }
-}
-
-function applyTheme(theme) {
-  document.body.classList.remove('theme-cyber', 'theme-blackhole');
-  if (theme !== 'mono') document.body.classList.add('theme-' + theme);
-  document.querySelectorAll('.theme-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.theme === theme);
-    btn.textContent = btn.dataset.theme === theme ? 'Aktif' : 'Aktifkan';
-  });
-  localStorage.setItem('zack-theme', theme);
-  currentTheme = theme;
-  loadBanner();
-  if (window.updateShaderColors) window.updateShaderColors(theme);
-}
-
-document.querySelectorAll('.theme-btn').forEach(btn => {
-  btn.addEventListener('click', () => applyTheme(btn.dataset.theme));
-});
-
+function loadBanner() { const url = themeBanners[currentTheme] || themeBanners.mono; const container = document.getElementById('hero-banner'); if (!container) return; if (url.match(/\.(mp4|webm)$/i)) { container.innerHTML = `<video src="${url}" autoplay loop muted playsinline class="banner-media"></video><div class="banner-overlay"></div>`; } else { container.innerHTML = `<img src="${url}" alt="Banner" class="banner-media"><div class="banner-overlay"></div>`; } }
+function applyTheme(theme) { document.body.classList.remove('theme-cyber', 'theme-blackhole'); if (theme !== 'mono') document.body.classList.add('theme-' + theme); document.querySelectorAll('.theme-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.theme === theme); btn.textContent = btn.dataset.theme === theme ? 'Aktif' : 'Aktifkan'; }); localStorage.setItem('zack-theme', theme); currentTheme = theme; loadBanner(); if (window.updateShaderColors) window.updateShaderColors(theme); }
+document.querySelectorAll('.theme-btn').forEach(btn => { btn.addEventListener('click', () => applyTheme(btn.dataset.theme)); });
 applyTheme(currentTheme);
 
-const preloader = document.getElementById('preloader');
-const preBar = document.getElementById('pre-bar-fill');
-const prePct = document.getElementById('pre-pct');
-const preStatus = document.getElementById('pre-status');
-const preLog = document.getElementById('pre-log');
-
-const statusPhases = [
-  { at: 0, text: 'INITIALIZING SYSTEM' }, { at: 20, text: 'LOADING MODULES' },
-  { at: 45, text: 'BINDING EVENT' }, { at: 70, text: 'COMPILING SHADERS' },
-  { at: 90, text: 'FINALIZING' }, { at: 100, text: 'READY' }
-];
-const logMessages = [
-  'boot all_tools_zack v7.5', 'init webgl context', 'load fluid shader',
-  'mount 29 tool modules', 'bind downloader api', 'register event listeners',
-  'build tools grid', 'start scramble decode', 'system online'
-];
-
-function addLogLine(msg, delay) {
-  setTimeout(() => {
-    const line = document.createElement('div');
-    line.className = 'pre-log-line';
-    line.textContent = msg;
-    preLog.appendChild(line);
-    if (preLog.children.length > 4) preLog.removeChild(preLog.firstChild);
-  }, delay);
-}
-
-function runPreloader() {
-  logMessages.forEach((msg, i) => addLogLine(msg, 200 + i * 280));
-  let p = 0;
-  const interval = setInterval(() => {
-    p += Math.random() * 6 + 2;
-    if (p >= 100) p = 100;
-    preBar.style.width = p + '%';
-    prePct.textContent = String(Math.floor(p)).padStart(2, '0') + '%';
-    for (let i = statusPhases.length - 1; i >= 0; i--) {
-      if (p >= statusPhases[i].at) { preStatus.textContent = statusPhases[i].text; break; }
-    }
-    if (p >= 100) {
-      clearInterval(interval);
-      setTimeout(() => {
-        preloader.classList.add('done');
-        document.body.classList.add('loaded');
-        setTimeout(() => {
-          preloader.style.display = 'none';
-          scramble();
-          revealTools();
-        }, 1000);
-      }, 500);
-    }
-  }, 100);
-}
-
+const preloader = document.getElementById('preloader'); const preBar = document.getElementById('pre-bar-fill'); const prePct = document.getElementById('pre-pct'); const preStatus = document.getElementById('pre-status'); const preLog = document.getElementById('pre-log');
+const statusPhases = [{ at: 0, text: 'INITIALIZING SYSTEM' }, { at: 20, text: 'LOADING MODULES' }, { at: 45, text: 'BINDING EVENT' }, { at: 70, text: 'COMPILING SHADERS' }, { at: 90, text: 'FINALIZING' }, { at: 100, text: 'READY' }];
+const logMessages = ['boot all_tools_zack v15.0', 'init webgl context', 'load fluid shader', 'mount 40 tool modules', 'init ai center', 'register event listeners', 'build tools grid', 'start scramble decode', 'system online'];
+function addLogLine(msg, delay) { setTimeout(() => { const line = document.createElement('div'); line.className = 'pre-log-line'; line.textContent = msg; preLog.appendChild(line); if (preLog.children.length > 4) preLog.removeChild(preLog.firstChild); }, delay); }
+function runPreloader() { logMessages.forEach((msg, i) => addLogLine(msg, 200 + i * 280)); let p = 0; const interval = setInterval(() => { p += Math.random() * 6 + 2; if (p >= 100) p = 100; preBar.style.width = p + '%'; prePct.textContent = String(Math.floor(p)).padStart(2, '0') + '%'; for (let i = statusPhases.length - 1; i >= 0; i--) { if (p >= statusPhases[i].at) { preStatus.textContent = statusPhases[i].text; break; } } if (p >= 100) { clearInterval(interval); setTimeout(() => { preloader.classList.add('done'); document.body.classList.add('loaded'); setTimeout(() => { preloader.style.display = 'none'; scramble(); revealTools(); }, 1000); }, 500); } }, 100); }
 setTimeout(runPreloader, 1600);
 
-const bgMusic = document.getElementById('bg-music');
-const musicToggle = document.getElementById('music-toggle');
-const musicIcon = document.getElementById('music-icon');
-let isMusicPlaying = false;
+const bgMusic = document.getElementById('bg-music'); const musicToggle = document.getElementById('music-toggle'); const musicIcon = document.getElementById('music-icon'); let isMusicPlaying = false; bgMusic.volume = 0.4;
+const playMusic = () => { if (!isMusicPlaying) { bgMusic.play().then(() => { isMusicPlaying = true; musicIcon.innerHTML = '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>'; }).catch(() => {}); } };
+setTimeout(playMusic, 2000); document.body.addEventListener('click', () => { if (!isMusicPlaying) playMusic(); }, { once: true });
+musicToggle.addEventListener('click', (e) => { e.stopPropagation(); if (isMusicPlaying) { bgMusic.pause(); isMusicPlaying = false; musicIcon.innerHTML = '<line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v9l12-2v-9"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>'; } else { bgMusic.play(); isMusicPlaying = true; musicIcon.innerHTML = '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>'; } });
 
-bgMusic.volume = 0.4;
-
-const playMusic = () => {
-  if (!isMusicPlaying) {
-    bgMusic.play().then(() => {
-      isMusicPlaying = true;
-      musicIcon.innerHTML = '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>';
-    }).catch(() => {});
-  }
-};
-
-setTimeout(playMusic, 2000);
-
-document.body.addEventListener('click', () => {
-  if (!isMusicPlaying) playMusic();
-}, { once: true });
-
-musicToggle.addEventListener('click', (e) => {
-  e.stopPropagation();
-  if (isMusicPlaying) {
-    bgMusic.pause();
-    isMusicPlaying = false;
-    musicIcon.innerHTML = '<line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v9l12-2v-9"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>';
-  } else {
-    bgMusic.play();
-    isMusicPlaying = true;
-    musicIcon.innerHTML = '<path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>';
-  }
-});
-
-const canvas = document.getElementById('fluid-canvas');
-const gl = canvas.getContext('webgl', { antialias: false, alpha: false });
-let mouseX = 0.5, mouseY = 0.5;
-let running = true;
-
-function resize() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-  canvas.width = Math.floor(window.innerWidth * dpr);
-  canvas.height = Math.floor(window.innerHeight * dpr);
-  canvas.style.width = window.innerWidth + 'px';
-  canvas.style.height = window.innerHeight + 'px';
-}
-resize();
-window.addEventListener('resize', resize);
-
+const canvas = document.getElementById('fluid-canvas'); const gl = canvas.getContext('webgl', { antialias: false, alpha: false }); let mouseX = 0.5, mouseY = 0.5; let running = true;
+function resize() { const dpr = Math.min(window.devicePixelRatio || 1, 1.5); canvas.width = Math.floor(window.innerWidth * dpr); canvas.height = Math.floor(window.innerHeight * dpr); canvas.style.width = window.innerWidth + 'px'; canvas.style.height = window.innerHeight + 'px'; }
+resize(); window.addEventListener('resize', resize);
 let prog, resLoc, timeLoc, mouseLoc, c3Loc, c4Loc;
 if (gl) {
   const vsSrc = `attribute vec2 a_position; varying vec2 v_uv; void main() { v_uv = a_position * 0.5 + 0.5; gl_Position = vec4(a_position, 0.0, 1.0); }`;
-  const fsSrc = `
-    precision highp float;
-    uniform vec2 u_resolution; uniform float u_time; uniform vec2 u_mouse; uniform vec3 u_c3; uniform vec3 u_c4;
-    varying vec2 v_uv;
-    float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-    float noise(vec2 p) {
-      vec2 i = floor(p); vec2 f = fract(p); f = f*f*(3.0-2.0*f);
-      return mix(mix(hash(i), hash(i+vec2(1.0,0.0)), f.x), mix(hash(i+vec2(0.0,1.0)), hash(i+vec2(1.0,1.0)), f.x), f.y);
-    }
-    float fbm(vec2 p) { float s=0.0,a=0.5,f=1.0; for(int i=0;i<6;i++){s+=noise(p*f)*a;a*=0.5;f*=2.0;} return s; }
-    void main() {
-      vec2 uv = v_uv; vec2 p = (uv*2.0-1.0); p.x *= u_resolution.x/u_resolution.y;
-      float t = u_time * 0.07;
-      vec2 mUV = u_mouse*2.0-1.0; mUV.x *= u_resolution.x/u_resolution.y;
-      float md = distance(p, mUV);
-      vec2 mFlow = (p - mUV) * exp(-md*2.5) * 0.3;
-      vec2 q = vec2(fbm(p+t+mFlow), fbm(p+t+vec2(5.2,1.3)+mFlow));
-      vec2 r = vec2(fbm(p+q+vec2(1.7,9.2)+t*0.5), fbm(p+q+vec2(8.3,2.8)+t*0.5));
-      float f = fbm(p+r*1.2);
-      vec3 c1 = vec3(0.02, 0.02, 0.02);
-      vec3 c2 = vec3(0.05, 0.05, 0.05);
-      vec3 col = mix(c1, c2, smoothstep(0.0, 0.6, f));
-      col = mix(col, u_c4*0.5, smoothstep(0.5, 0.85, f) * 0.35);
-      col = mix(col, u_c3, smoothstep(0.65, 0.95, length(r)) * 0.3);
-      col += u_c3 * exp(-md*4.0) * 0.15;
-      float vig = 1.0 - smoothstep(0.5, 1.4, length(uv*2.0-1.0));
-      col *= vig * 0.82 + 0.18;
-      col += hash(uv*u_resolution+u_time) * 0.03 - 0.015;
-      gl_FragColor = vec4(col, 1.0);
-    }
-  `;
+  const fsSrc = `precision highp float; uniform vec2 u_resolution; uniform float u_time; uniform vec2 u_mouse; uniform vec3 u_c3; uniform vec3 u_c4; varying vec2 v_uv; float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); } float noise(vec2 p) { vec2 i = floor(p); vec2 f = fract(p); f = f*f*(3.0-2.0*f); return mix(mix(hash(i), hash(i+vec2(1.0,0.0)), f.x), mix(hash(i+vec2(0.0,1.0)), hash(i+vec2(1.0,1.0)), f.x), f.y); } float fbm(vec2 p) { float s=0.0,a=0.5,f=1.0; for(int i=0;i<6;i++){s+=noise(p*f)*a;a*=0.5;f*=2.0;} return s; } void main() { vec2 uv = v_uv; vec2 p = (uv*2.0-1.0); p.x *= u_resolution.x/u_resolution.y; float t = u_time * 0.07; vec2 mUV = u_mouse*2.0-1.0; mUV.x *= u_resolution.x/u_resolution.y; float md = distance(p, mUV); vec2 mFlow = (p - mUV) * exp(-md*2.5) * 0.3; vec2 q = vec2(fbm(p+t+mFlow), fbm(p+t+vec2(5.2,1.3)+mFlow)); vec2 r = vec2(fbm(p+q+vec2(1.7,9.2)+t*0.5), fbm(p+q+vec2(8.3,2.8)+t*0.5)); float f = fbm(p+r*1.2); vec3 c1 = vec3(0.02, 0.02, 0.02); vec3 c2 = vec3(0.05, 0.05, 0.05); vec3 col = mix(c1, c2, smoothstep(0.0, 0.6, f)); col = mix(col, u_c4*0.5, smoothstep(0.5, 0.85, f) * 0.35); col = mix(col, u_c3, smoothstep(0.65, 0.95, length(r)) * 0.3); col += u_c3 * exp(-md*4.0) * 0.15; float vig = 1.0 - smoothstep(0.5, 1.4, length(uv*2.0-1.0)); col *= vig * 0.82 + 0.18; col += hash(uv*u_resolution+u_time) * 0.03 - 0.015; gl_FragColor = vec4(col, 1.0); }`;
   function compile(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
-  prog = gl.createProgram();
-  gl.attachShader(prog, compile(gl.VERTEX_SHADER, vsSrc));
-  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fsSrc));
-  gl.linkProgram(prog); gl.useProgram(prog);
-  const posLoc = gl.getAttribLocation(prog, 'a_position');
-  const buf = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
-  gl.enableVertexAttribArray(posLoc);
-  gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-  resLoc = gl.getUniformLocation(prog, 'u_resolution');
-  timeLoc = gl.getUniformLocation(prog, 'u_time');
-  mouseLoc = gl.getUniformLocation(prog, 'u_mouse');
-  c3Loc = gl.getUniformLocation(prog, 'u_c3');
-  c4Loc = gl.getUniformLocation(prog, 'u_c4');
-  
-  window.updateShaderColors = (theme) => {
-    const colors = themeColors[theme] || themeColors.mono;
-    gl.useProgram(prog);
-    gl.uniform3fv(c3Loc, colors.c3);
-    gl.uniform3fv(c4Loc, colors.c4);
-  };
+  prog = gl.createProgram(); gl.attachShader(prog, compile(gl.VERTEX_SHADER, vsSrc)); gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fsSrc)); gl.linkProgram(prog); gl.useProgram(prog);
+  const posLoc = gl.getAttribLocation(prog, 'a_position'); const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(posLoc); gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+  resLoc = gl.getUniformLocation(prog, 'u_resolution'); timeLoc = gl.getUniformLocation(prog, 'u_time'); mouseLoc = gl.getUniformLocation(prog, 'u_mouse'); c3Loc = gl.getUniformLocation(prog, 'u_c3'); c4Loc = gl.getUniformLocation(prog, 'u_c4');
+  window.updateShaderColors = (theme) => { const colors = themeColors[theme] || themeColors.mono; gl.useProgram(prog); gl.uniform3fv(c3Loc, colors.c3); gl.uniform3fv(c4Loc, colors.c4); };
   updateShaderColors(currentTheme);
-
-  const start = performance.now();
-  let smX = 0.5, smY = 0.5;
-  function render() {
-    if (!running) { requestAnimationFrame(render); return; }
-    const t = (performance.now() - start) / 1000;
-    smX += (mouseX - smX) * 0.035; smY += (mouseY - smY) * 0.035;
-    gl.viewport(0, 0, canvas.width, canvas.height);
-    gl.uniform2f(resLoc, canvas.width, canvas.height);
-    gl.uniform1f(timeLoc, t);
-    gl.uniform2f(mouseLoc, smX, smY);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
-    requestAnimationFrame(render);
-  }
+  const start = performance.now(); let smX = 0.5, smY = 0.5;
+  function render() { if (!running) { requestAnimationFrame(render); return; } const t = (performance.now() - start) / 1000; smX += (mouseX - smX) * 0.035; smY += (mouseY - smY) * 0.035; gl.viewport(0, 0, canvas.width, canvas.height); gl.uniform2f(resLoc, canvas.width, canvas.height); gl.uniform1f(timeLoc, t); gl.uniform2f(mouseLoc, smX, smY); gl.drawArrays(gl.TRIANGLES, 0, 6); requestAnimationFrame(render); }
   render();
   window.addEventListener('mousemove', e => { mouseX = e.clientX / window.innerWidth; mouseY = 1.0 - e.clientY / window.innerHeight; });
   document.addEventListener('visibilitychange', () => { running = !document.hidden; });
-} else {
-  canvas.style.background = 'radial-gradient(ellipse at 30% 20%, rgba(50,50,50,0.4) 0%, rgba(5,5,5,1) 70%)';
-}
+} else { canvas.style.background = 'radial-gradient(ellipse at 30% 20%, rgba(50,50,50,0.4) 0%, rgba(5,5,5,1) 70%)'; }
 
-const CHARS = '!<>-_\\/[]{}—=+*^?#________01';
-const heroTitle = document.getElementById('hero-title');
-const TARGET = 'ALL TOOLS ZACK';
-function scramble() {
-  let iter = 0;
-  const max = TARGET.length * 8;
-  heroTitle.classList.add('is-decoding');
-  (function tick() {
-    heroTitle.textContent = TARGET.split('').map((ch, i) => i < iter / 8 ? TARGET[i] : CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
-    iter += 1;
-    if (iter >= max) { heroTitle.textContent = TARGET; heroTitle.classList.remove('is-decoding'); return; }
-    setTimeout(tick, 45);
-  })();
-}
-
-const enterObs = new IntersectionObserver(es => {
-  es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); enterObs.unobserve(e.target); } });
-}, { threshold: 0.15 });
+const CHARS = '!<>-_\\/[]{}—=+*^?#________01'; const heroTitle = document.getElementById('hero-title'); const TARGET = 'ALL TOOLS ZACK';
+function scramble() { let iter = 0; const max = TARGET.length * 8; heroTitle.classList.add('is-decoding'); (function tick() { heroTitle.textContent = TARGET.split('').map((ch, i) => i < iter / 8 ? TARGET[i] : CHARS[Math.floor(Math.random() * CHARS.length)]).join(''); iter += 1; if (iter >= max) { heroTitle.textContent = TARGET; heroTitle.classList.remove('is-decoding'); return; } setTimeout(tick, 45); })(); }
+const enterObs = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); enterObs.unobserve(e.target); } }); }, { threshold: 0.15 });
 document.querySelectorAll('.headline-enter').forEach(el => enterObs.observe(el));
 
 const settingsOverlay = document.getElementById('settings-overlay');
-
-document.querySelectorAll('.nav-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const nav = btn.dataset.nav;
-    if (nav === 'home') {
-      document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
-    } else if (nav === 'download') {
-      document.getElementById('tools').scrollIntoView({ behavior: 'smooth' });
-      document.querySelector('.filter-tab[data-cat="downloader"]').click();
-    } else if (nav === 'setting') {
-      settingsOverlay.classList.add('active');
-    }
-  });
-});
-
-document.getElementById('settings-close').addEventListener('click', () => {
-  settingsOverlay.classList.remove('active');
-});
-
-window.addEventListener('scroll', () => {
-  let current = 'home';
-  if (window.scrollY > document.getElementById('tools').offsetTop - 200) current = 'download';
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.nav === current);
-  });
-});
+document.querySelectorAll('.nav-btn').forEach(btn => { btn.addEventListener('click', () => { const nav = btn.dataset.nav; if (nav === 'home') { document.getElementById('home').scrollIntoView({ behavior: 'smooth' }); } else if (nav === 'download') { document.getElementById('tools').scrollIntoView({ behavior: 'smooth' }); document.querySelector('.filter-tab[data-cat="downloader"]').click(); } else if (nav === 'setting') { settingsOverlay.classList.add('active'); } }); });
+document.getElementById('settings-close').addEventListener('click', () => { settingsOverlay.classList.remove('active'); });
+window.addEventListener('scroll', () => { let current = 'home'; if (window.scrollY > document.getElementById('tools').offsetTop - 200) current = 'download'; document.querySelectorAll('.nav-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.nav === current); }); });
 
 const tools = [
   { id: '01', name: 'Instagram Downloader', cat: 'downloader', catLabel: 'DOWNLOADER', icon: 'fa-brands fa-instagram', desc: 'Download video, foto, reel, dan story Instagram tanpa watermark.', render: () => dlTemplate('instagram') },
@@ -596,405 +460,268 @@ const tools = [
   { id: '04', name: 'Facebook Downloader', cat: 'downloader', catLabel: 'DOWNLOADER', icon: 'fa-brands fa-facebook', desc: 'Download video Facebook HD/SD format MP4 secara cepat.', render: () => dlTemplate('facebook') },
   { id: '05', name: 'Twitter Downloader', cat: 'downloader', catLabel: 'DOWNLOADER', icon: 'fa-brands fa-x-twitter', desc: 'Download video Twitter/X dalam format MP4 kualitas tinggi.', render: () => dlTemplate('twitter') },
   { id: '06', name: 'Terabox Downloader', cat: 'downloader', catLabel: 'DOWNLOADER', icon: 'fa-solid fa-cloud', desc: 'Download file video dari link Terabox langsung tanpa aplikasi.', render: () => dlTemplate('terabox') },
+  { id: '07', name: 'YouTube Thumbnail Downloader', cat: 'downloader', catLabel: 'DOWNLOADER', icon: 'fa-solid fa-image', desc: 'Download thumbnail resolusi tinggi (HD) dari video YouTube.', render: () => `
+      <div class="tool-field"><label class="tool-label">Paste YouTube URL</label><input type="text" class="tool-input" id="yt-thumb-url" placeholder="https://www.youtube.com/watch?v=..."></div>
+      <button class="tool-btn" onclick="window.getYTThumb()"><i class="fa-solid fa-magnifying-glass"></i> Get Thumbnail</button>
+      <div class="dl-result" id="yt-thumb-result"></div>` 
+  },
   
-  { 
-    id: '07', name: 'File to Link Converter', cat: 'upload', catLabel: 'UPLOAD', icon: 'fa-solid fa-link', desc: 'Unggah foto, video, atau musik untuk diubah menjadi link berbagi langsung.', 
-    render: () => `
-      <div class="tool-field">
-        <label class="tool-label">Upload File (Max 50MB)</label>
-        <div class="img-dropzone" id="upl-dropzone" onclick="document.getElementById('upl-file').click()" style="border: 2px dashed var(--ink-trace); padding: 2rem; text-align: center; cursor: pointer; border-radius: 8px;">
-          Click or drag file here (Foto/Video/Musik)
-          <input type="file" id="upl-file" style="display:none;" onchange="window.handleFileSelect(this.files[0])">
-        </div>
-      </div>
-      <button class="tool-btn" onclick="window.uploadFile()" id="upl-btn">Generate Link</button>
-      <div class="dl-result" id="upl-result" style="margin-top: 1rem;"></div>
-    `,
-    init: () => {
-      const dz = document.getElementById('upl-dropzone');
-      window.selectedFile = null;
-      window.handleFileSelect = function(file) {
-        if (!file) return;
-        window.selectedFile = file;
-        dz.style.borderColor = 'var(--neon-cyan)';
-        dz.innerText = `File dipilih: ${file.name} (${window.formatBytes(file.size)})`;
-      };
-      dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--neon-cyan)'; });
-      dz.addEventListener('dragleave', () => dz.style.borderColor = 'var(--ink-trace)');
-      dz.addEventListener('drop', e => {
-        e.preventDefault(); dz.style.borderColor = 'var(--ink-trace)';
-        if (e.dataTransfer.files[0]) window.handleFileSelect(e.dataTransfer.files[0]);
-      });
-    } 
+  { id: '08', name: 'File to Link Converter', cat: 'upload', catLabel: 'UPLOAD', icon: 'fa-solid fa-link', desc: 'Unggah foto, video, atau musik untuk diubah menjadi link berbagi langsung.', render: () => `
+      <div class="tool-field"><label class="tool-label">Upload File (Max 50MB)</label><div class="img-dropzone" id="upl-dropzone" onclick="document.getElementById('upl-file').click()" style="border: 2px dashed var(--ink-trace); padding: 2rem; text-align: center; cursor: pointer; border-radius: 8px;">Click or drag file here (Foto/Video/Musik)<input type="file" id="upl-file" style="display:none;" onchange="window.handleFileSelect(this.files[0])"></div></div>
+      <button class="tool-btn" onclick="window.uploadFile()" id="upl-btn">Generate Link</button><div class="dl-result" id="upl-result" style="margin-top: 1rem;"></div>`,
+    init: () => { const dz = document.getElementById('upl-dropzone'); window.selectedFile = null; window.handleFileSelect = function(file) { if (!file) return; window.selectedFile = file; dz.style.borderColor = 'var(--neon-cyan)'; dz.innerText = `File dipilih: ${file.name} (${window.formatBytes(file.size)})`; }; dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--neon-cyan)'; }); dz.addEventListener('dragleave', () => dz.style.borderColor = 'var(--ink-trace)'); dz.addEventListener('drop', e => { e.preventDefault(); dz.style.borderColor = 'var(--ink-trace)'; if (e.dataTransfer.files[0]) window.handleFileSelect(e.dataTransfer.files[0]); }); } 
   },
 
-  { 
-    id: '08', name: 'Password Generator', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-key', desc: 'Generate password aman menggunakan crypto.getRandomValues.', 
-    render: () => `
+  { id: '09', name: 'IQC Image Compressor', cat: 'image', catLabel: 'IMAGE', icon: 'fa-solid fa-image', desc: 'Kompres gambar di sisi klien. Atur kualitas, lihat before/after.', render: () => `
+      <div class="tool-field"><label class="tool-label">Upload Image</label><div class="img-dropzone" id="iqc-dropzone" onclick="document.getElementById('iqc-file').click()" style="border: 2px dashed var(--ink-trace); padding: 2rem; text-align: center; cursor: pointer; border-radius: 8px;">Click or drag image here<input type="file" id="iqc-file" accept="image/*" style="display:none;" onchange="window.iqcHandleFile(this.files[0])"></div></div>
+      <div class="tool-field"><label class="tool-label">Quality: <span id="iqc-q-val">60</span>%</label><input type="range" id="iqc-quality" min="5" max="100" value="60" oninput="document.getElementById('iqc-q-val').textContent=this.value;window.iqcCompress()" style="padding:0;"></div>
+      <div id="iqc-preview"></div>`,
+    init: () => { const dz = document.getElementById('iqc-dropzone'); dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--neon-cyan)'; }); dz.addEventListener('dragleave', () => dz.style.borderColor = 'var(--ink-trace)'); dz.addEventListener('drop', e => { e.preventDefault(); dz.style.borderColor = 'var(--ink-trace)'; if (e.dataTransfer.files[0]) window.iqcHandleFile(e.dataTransfer.files[0]); }); } 
+  },
+  { id: '10', name: 'Image to PDF Converter', cat: 'image', catLabel: 'IMAGE', icon: 'fa-solid fa-file-pdf', desc: 'Ubah satu atau beberapa foto menjadi satu file PDF secara instan.', render: () => `
+      <div class="tool-field"><label class="tool-label">Upload Images</label><div class="img-dropzone" id="pdf-dropzone" onclick="document.getElementById('pdf-files').click()" style="border: 2px dashed var(--ink-trace); padding: 2rem; text-align: center; cursor: pointer; border-radius: 8px;">Click or drag images here<input type="file" id="pdf-files" accept="image/*" multiple style="display:none;" onchange="window.handlePdfFiles(this.files)"></div></div>
+      <button class="tool-btn" onclick="window.convertToPdf()" id="pdf-btn"><i class="fa-solid fa-file-export"></i> Convert to PDF</button>
+      <div class="dl-result" id="pdf-result" style="margin-top: 1rem;"></div>`,
+    init: () => { const dz = document.getElementById('pdf-dropzone'); window.pdfFiles = []; window.handlePdfFiles = function(files) { if (!files || !files.length) return; window.pdfFiles = Array.from(files); dz.style.borderColor = 'var(--neon-cyan)'; dz.innerText = `${window.pdfFiles.length} gambar dipilih. Klik Convert to PDF.`; }; dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--neon-cyan)'; }); dz.addEventListener('dragleave', () => dz.style.borderColor = 'var(--ink-trace)'); dz.addEventListener('drop', e => { e.preventDefault(); dz.style.borderColor = 'var(--ink-trace)'; if (e.dataTransfer.files[0]) window.handlePdfFiles(e.dataTransfer.files); }); } 
+  },
+  { id: '11', name: 'Image Color Picker', cat: 'image', catLabel: 'IMAGE', icon: 'fa-solid fa-eye-dropper', desc: 'Upload gambar, klik untuk pick warna pixel.', render: () => `
+      <div class="tool-field"><label class="tool-label">Upload Image</label><div class="img-dropzone" id="cp-dropzone" onclick="document.getElementById('cp-file').click()" style="border: 2px dashed var(--ink-trace); padding: 2rem; text-align: center; cursor: pointer; border-radius: 8px;">Click or drag image here<input type="file" id="cp-file" accept="image/*" style="display:none;" onchange="window.cpHandle(this.files[0])"></div></div>
+      <div id="cp-canvas-wrap" style="display:none;margin-bottom:1rem;"><canvas id="cp-canvas" style="max-width:100%;cursor:crosshair;border-radius:8px;"></canvas></div>
+      <div class="tool-field"><label class="tool-label">Picked Color</label><div class="tool-row"><div id="cp-swatch" style="width:50px;height:38px;background:var(--void-card);border-radius:8px;"></div><div class="tool-output" id="cp-result" style="flex:1;">click image</div></div></div>`,
+    init: () => { const dz = document.getElementById('cp-dropzone'); dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--neon-cyan)'; }); dz.addEventListener('dragleave', () => dz.style.borderColor = 'var(--ink-trace)'); dz.addEventListener('drop', e => { e.preventDefault(); dz.style.borderColor = 'var(--ink-trace)'; if (e.dataTransfer.files[0]) window.cpHandle(e.dataTransfer.files[0]); }); } 
+  },
+
+  { id: '12', name: 'Password Generator', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-key', desc: 'Generate password aman menggunakan crypto.getRandomValues.', render: () => `
       <div class="tool-field"><label class="tool-label">Length: <span id="pw-len-val">20</span> chars</label><input type="range" id="pw-len" min="6" max="64" value="20" class="tool-input" style="padding:0;"></div>
       <div class="tool-field"><div class="tool-row" style="gap:1rem;"><label class="tool-checkbox"><input type="checkbox" id="pw-upper" checked>Uppercase</label><label class="tool-checkbox"><input type="checkbox" id="pw-lower" checked>Lowercase</label><label class="tool-checkbox"><input type="checkbox" id="pw-num" checked>Numbers</label><label class="tool-checkbox"><input type="checkbox" id="pw-sym" checked>Symbols</label></div></div>
       <div class="tool-field"><label class="tool-label">Output</label><div class="tool-output" id="pw-out">click generate</div></div>
-      <button class="tool-btn" onclick="window.genPw()">Generate</button><button class="tool-btn secondary" onclick="window.copyEl('pw-out')">Copy</button>
-    `,
-    init: () => {
-      const len = document.getElementById('pw-len'); const val = document.getElementById('pw-len-val');
-      len.addEventListener('input', () => val.textContent = len.value);
-      window.genPw();
-    } 
+      <button class="tool-btn" onclick="window.genPw()">Generate</button><button class="tool-btn secondary" onclick="window.copyEl('pw-out')">Copy</button>`,
+    init: () => { const len = document.getElementById('pw-len'); const val = document.getElementById('pw-len-val'); len.addEventListener('input', () => val.textContent = len.value); window.genPw(); } 
   },
-  { id: '09', name: 'Base64 Encode / Decode', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-code', desc: 'Konversi teks ke dan dari Base64. Aman untuk UTF-8.', render: () => `
+  { id: '13', name: 'Password Strength Checker', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-shield-halved', desc: 'Cek seberapa kuat password Anda dengan indikator visual.', render: () => `
+      <div class="tool-field"><label class="tool-label">Masukkan Password</label><input type="text" class="tool-input" id="pass-check" placeholder="Ketik password..." oninput="window.checkPassStrength()">
+      <div class="pass-bar-bg"><div class="pass-bar-fill" id="pass-bar"></div></div></div>
+      <div class="tool-output" id="pass-out" style="margin-top:1rem;">—</div>` 
+  },
+  { id: '14', name: 'Base64 Encode / Decode', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-code', desc: 'Konversi teks ke dan dari Base64. Aman untuk UTF-8.', render: () => `
       <div class="tool-field"><label class="tool-label">Input</label><textarea class="tool-textarea" id="b64-input" placeholder="Type or paste text..."></textarea></div>
       <div class="tool-row" style="margin-bottom:1.25rem;"><button class="tool-btn" onclick="window.b64Enc()">Encode</button><button class="tool-btn" onclick="window.b64Dec()">Decode</button></div>
       <div class="tool-field"><label class="tool-label">Output</label><div class="tool-output" id="b64-out">—</div></div>
-      <button class="tool-btn secondary" onclick="window.copyEl('b64-out')">Copy output</button>
-  ` },
-  { id: '10', name: 'SHA Hash Generator', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-hashtag', desc: 'SHA-1, SHA-256, SHA-384, SHA-512 melalui Web Crypto API.', render: () => `
+      <button class="tool-btn secondary" onclick="window.copyEl('b64-out')">Copy output</button>` 
+  },
+  { id: '15', name: 'SHA Hash Generator', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-hashtag', desc: 'SHA-1, SHA-256, SHA-384, SHA-512 melalui Web Crypto API.', render: () => `
       <div class="tool-field"><label class="tool-label">Input text</label><textarea class="tool-textarea" id="hash-input" placeholder="Text to hash..."></textarea></div>
       <div class="tool-field"><label class="tool-label">Algorithm</label><select class="tool-select" id="hash-algo"><option value="SHA-1">SHA-1</option><option value="SHA-256" selected>SHA-256</option><option value="SHA-384">SHA-384</option><option value="SHA-512">SHA-512</option></select></div>
       <button class="tool-btn" onclick="window.genHash()">Generate hash</button>
       <div class="tool-field" style="margin-top:1.25rem;"><label class="tool-label">Hash digest (hex)</label><div class="tool-output" id="hash-out">—</div></div>
-      <button class="tool-btn secondary" onclick="window.copyEl('hash-out')">Copy hash</button>
-  ` },
-  { id: '11', name: 'UUID Generator', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-fingerprint', desc: 'RFC 4122 v4 UUID menggunakan crypto.randomUUID.', render: () => `
+      <button class="tool-btn secondary" onclick="window.copyEl('hash-out')">Copy hash</button>` 
+  },
+  { id: '16', name: 'UUID Generator', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-fingerprint', desc: 'RFC 4122 v4 UUID menggunakan crypto.randomUUID.', render: () => `
       <div class="tool-field"><label class="tool-label">Count: <span id="uuid-count-val">5</span></label><input type="range" id="uuid-count" min="1" max="50" value="5" class="tool-input" style="padding:0;"></div>
       <button class="tool-btn" onclick="window.genUuid()">Generate</button><button class="tool-btn secondary" onclick="window.copyEl('uuid-out')">Copy all</button>
-      <div class="tool-field" style="margin-top:1.25rem;"><label class="tool-label">Generated UUIDs</label><div class="tool-output" id="uuid-out" style="min-height:100px;">—</div></div>
-    `, init: () => {
-      const c = document.getElementById('uuid-count'); const v = document.getElementById('uuid-count-val');
-      c.addEventListener('input', () => v.textContent = c.value);
-      window.genUuid();
-    } },
-  { id: '12', name: 'JWT Decoder', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-unlock', desc: 'Decode JSON Web Token. Tampilkan header dan payload.', render: () => `
+      <div class="tool-field" style="margin-top:1.25rem;"><label class="tool-label">Generated UUIDs</label><div class="tool-output" id="uuid-out" style="min-height:100px;">—</div></div>`,
+    init: () => { const c = document.getElementById('uuid-count'); const v = document.getElementById('uuid-count-val'); c.addEventListener('input', () => v.textContent = c.value); window.genUuid(); } 
+  },
+  { id: '17', name: 'JWT Decoder', cat: 'crypto', catLabel: 'CRYPTO', icon: 'fa-solid fa-unlock', desc: 'Decode JSON Web Token. Tampilkan header dan payload.', render: () => `
       <div class="tool-field"><label class="tool-label">JWT Token</label><textarea class="tool-textarea" id="jwt-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." style="min-height:100px;"></textarea></div>
       <button class="tool-btn" onclick="window.jwtDecode()">Decode</button>
       <div class="tool-field" style="margin-top:1.25rem;"><label class="tool-label">Header</label><div class="tool-output" id="jwt-header" style="min-height:60px;white-space:pre-wrap;">—</div></div>
-      <div class="tool-field"><label class="tool-label">Payload</label><div class="tool-output" id="jwt-payload" style="min-height:80px;white-space:pre-wrap;">—</div></div>
-  ` },
+      <div class="tool-field"><label class="tool-label">Payload</label><div class="tool-output" id="jwt-payload" style="min-height:80px;white-space:pre-wrap;">—</div></div>` 
+  },
   
-  { id: '13', name: 'Word & Char Counter', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-text-width', desc: 'Hitung kata, karakter, kalimat, dan estimasi waktu baca.', render: () => `
+  { id: '18', name: 'Word & Char Counter', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-text-width', desc: 'Hitung kata, karakter, kalimat, dan estimasi waktu baca.', render: () => `
       <div class="tool-field"><label class="tool-label">Text</label><textarea class="tool-textarea" id="count-input" placeholder="Paste text..." style="min-height:160px;"></textarea></div>
-      <div class="tool-row" style="gap:1rem; margin-top:1rem;"><div class="tool-output" style="flex:1; text-align:center;">Words: <b id="cnt-words">0</b></div><div class="tool-output" style="flex:1; text-align:center;">Chars: <b id="cnt-chars">0</b></div><div class="tool-output" style="flex:1; text-align:center;">Read: <b id="cnt-read">0s</b></div></div>
-    `, init: () => {
-      const input = document.getElementById('count-input');
-      input.addEventListener('input', () => {
-        const t = input.value;
-        const words = t.trim() ? t.trim().split(/\s+/).length : 0;
-        document.getElementById('cnt-words').textContent = words;
-        document.getElementById('cnt-chars').textContent = t.length;
-        const sec = Math.ceil(words / 3.5);
-        document.getElementById('cnt-read').textContent = sec < 60 ? sec + 's' : Math.floor(sec/60) + 'm';
-      });
-    } },
-  { id: '14', name: 'Case Converter', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-font', desc: 'UPPER, lower, Title, camelCase, snake_case, kebab-case.', render: () => `
+      <div class="tool-row" style="gap:1rem; margin-top:1rem;"><div class="tool-output" style="flex:1; text-align:center;">Words: <b id="cnt-words">0</b></div><div class="tool-output" style="flex:1; text-align:center;">Chars: <b id="cnt-chars">0</b></div><div class="tool-output" style="flex:1; text-align:center;">Read: <b id="cnt-read">0s</b></div></div>`,
+    init: () => { const input = document.getElementById('count-input'); input.addEventListener('input', () => { const t = input.value; const words = t.trim() ? t.trim().split(/\s+/).length : 0; document.getElementById('cnt-words').textContent = words; document.getElementById('cnt-chars').textContent = t.length; const sec = Math.ceil(words / 3.5); document.getElementById('cnt-read').textContent = sec < 60 ? sec + 's' : Math.floor(sec/60) + 'm'; }); } 
+  },
+  { id: '19', name: 'Case Converter', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-font', desc: 'UPPER, lower, Title, camelCase, snake_case, kebab-case.', render: () => `
       <div class="tool-field"><label class="tool-label">Input</label><textarea class="tool-textarea" id="case-input" placeholder="Type text..."></textarea></div>
       <div class="tool-row" style="margin-bottom:1.25rem;gap:0.35rem;"><button class="tool-btn secondary" onclick="window.convertCase('upper')">UPPER</button><button class="tool-btn secondary" onclick="window.convertCase('lower')">lower</button><button class="tool-btn secondary" onclick="window.convertCase('title')">Title</button><button class="tool-btn secondary" onclick="window.convertCase('camel')">camelCase</button><button class="tool-btn secondary" onclick="window.convertCase('snake')">snake_case</button><button class="tool-btn secondary" onclick="window.convertCase('kebab')">kebab-case</button></div>
       <div class="tool-field"><label class="tool-label">Output</label><div class="tool-output" id="case-out">—</div></div>
-      <button class="tool-btn secondary" onclick="window.copyEl('case-out')">Copy output</button>
-  ` },
-  { id: '15', name: 'Lorem Ipsum Generator', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-feather', desc: 'Teks placeholder gaya Latin klasik. Paragraf, kalimat, kata.', render: () => `
+      <button class="tool-btn secondary" onclick="window.copyEl('case-out')">Copy output</button>` 
+  },
+  { id: '20', name: 'Lorem Ipsum Generator', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-feather', desc: 'Teks placeholder gaya Latin klasik. Paragraf, kalimat, kata.', render: () => `
       <div class="tool-field"><label class="tool-label">Type</label><select class="tool-select" id="lorem-type"><option value="paragraphs">Paragraphs</option><option value="sentences">Sentences</option><option value="words">Words</option></select></div>
       <div class="tool-field"><label class="tool-label">Count: <span id="lorem-count-val">3</span></label><input type="range" id="lorem-count" min="1" max="20" value="3" class="tool-input" style="padding:0;"></div>
       <button class="tool-btn" onclick="window.genLorem()">Generate</button><button class="tool-btn secondary" onclick="window.copyEl('lorem-out')">Copy</button>
-      <div class="tool-field" style="margin-top:1.25rem;"><label class="tool-label">Output</label><div class="tool-output" id="lorem-out" style="min-height:120px;white-space:pre-wrap;">—</div></div>
-    `, init: () => {
-      const c = document.getElementById('lorem-count'); const v = document.getElementById('lorem-count-val');
-      c.addEventListener('input', () => v.textContent = c.value);
-    } },
-  { id: '16', name: 'Text to Speech', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-volume-high', desc: 'Konversi teks ke suara menggunakan Web Speech API.', render: () => `
+      <div class="tool-field" style="margin-top:1.25rem;"><label class="tool-label">Output</label><div class="tool-output" id="lorem-out" style="min-height:120px;white-space:pre-wrap;">—</div></div>`,
+    init: () => { const c = document.getElementById('lorem-count'); const v = document.getElementById('lorem-count-val'); c.addEventListener('input', () => v.textContent = c.value); } 
+  },
+  { id: '21', name: 'Text to Speech', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-volume-high', desc: 'Konversi teks ke suara menggunakan Web Speech API.', render: () => `
       <div class="tool-field"><label class="tool-label">Text to speak</label><textarea class="tool-textarea" id="tts-input" placeholder="Type text...">Halo, ini adalah ALL TOOLS ZACK.</textarea></div>
       <div class="tool-field"><label class="tool-label">Language</label><select class="tool-select" id="tts-lang"><option value="id-ID">Indonesia</option><option value="en-US">English (US)</option><option value="ja-JP">Japan</option></select></div>
-      <button class="tool-btn" onclick="window.ttsSpeak()">▶ Speak</button><button class="tool-btn secondary" onclick="window.ttsStop()">■ Stop</button>
-  ` },
-  { id: '17', name: 'Markdown Previewer', cat: 'text', catLabel: 'TEXT', icon: 'fa-brands fa-markdown', desc: 'Preview live Markdown: heading, list, link, code, bold.', render: () => `
-      <div class="tool-row" style="align-items:flex-start;gap:1rem;"><div style="flex:1;min-width:0;"><label class="tool-label">Markdown</label><textarea class="tool-textarea" id="md-input" style="min-height:280px;">## Hello World\n\n**bold** *italic*</textarea></div><div style="flex:1;min-width:0;"><label class="tool-label">Preview</label><div id="md-preview" style="min-height:280px;padding:1rem;background:var(--void-black);border:1px solid var(--ink-trace);color:var(--ink-soft);line-height:1.6;overflow-y:auto;font-size:0.88rem;border-radius:8px;"></div></div></div>
-    `, init: () => {
-      const input = document.getElementById('md-input'); const preview = document.getElementById('md-preview');
-      function renderMd() {
-        let md = input.value;
-        md = md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        md = md.replace(/^### (.*$)/gm, '<h3 style="color:#fff;font-size:1rem;margin:0.5rem 0;font-family:Inter;">$1</h3>');
-        md = md.replace(/^## (.*$)/gm, '<h2 style="color:#fff;font-size:1.2rem;margin:0.7rem 0;font-family:Inter;">$1</h2>');
-        md = md.replace(/^# (.*$)/gm, '<h1 style="color:#fff;font-size:1.4rem;margin:0.9rem 0;font-family:Inter;">$1</h1>');
-        md = md.replace(/\*\*(.+?)\*\*/g, '<strong style="color:#fff;">$1</strong>');
-        md = md.replace(/\*(.+?)\*/g, '<em>$1</em>');
-        md = md.replace(/\n/g, '<br>');
-        preview.innerHTML = md;
-      }
-      input.addEventListener('input', renderMd); renderMd();
-    } },
+      <button class="tool-btn" onclick="window.ttsSpeak()">▶ Speak</button><button class="tool-btn secondary" onclick="window.ttsStop()">■ Stop</button>` 
+  },
+  { id: '22', name: 'Markdown Previewer', cat: 'text', catLabel: 'TEXT', icon: 'fa-brands fa-markdown', desc: 'Preview live Markdown: heading, list, link, code, bold.', render: () => `
+      <div class="tool-row" style="align-items:flex-start;gap:1rem;"><div style="flex:1;min-width:0;"><label class="tool-label">Markdown</label><textarea class="tool-textarea" id="md-input" style="min-height:280px;">## Hello World\n\n**bold** *italic*</textarea></div><div style="flex:1;min-width:0;"><label class="tool-label">Preview</label><div id="md-preview" style="min-height:280px;padding:1rem;background:var(--void-black);border:1px solid var(--ink-trace);color:var(--ink-soft);line-height:1.6;overflow-y:auto;font-size:0.88rem;border-radius:8px;"></div></div></div>`,
+    init: () => { const input = document.getElementById('md-input'); const preview = document.getElementById('md-preview'); function renderMd() { let md = input.value; md = md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); md = md.replace(/^### (.*$)/gm, '<h3 style="color:#fff;font-size:1rem;margin:0.5rem 0;font-family:Inter;">$1</h3>'); md = md.replace(/^## (.*$)/gm, '<h2 style="color:#fff;font-size:1.2rem;margin:0.7rem 0;font-family:Inter;">$1</h2>'); md = md.replace(/^# (.*$)/gm, '<h1 style="color:#fff;font-size:1.4rem;margin:0.9rem 0;font-family:Inter;">$1</h1>'); md = md.replace(/\*\*(.+?)\*\*/g, '<strong style="color:#fff;">$1</strong>'); md = md.replace(/\*(.+?)\*/g, '<em>$1</em>'); md = md.replace(/\n/g, '<br>'); preview.innerHTML = md; } input.addEventListener('input', renderMd); renderMd(); } 
+  },
+  { id: '23', name: 'Text Repeater', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-repeat', desc: 'Ulangi kata atau kalimat ratusan kali (viral untuk WA).', render: () => `
+      <div class="tool-field"><label class="tool-label">Text to Repeat</label><input type="text" class="tool-input" id="rep-input" placeholder="Ketik teks..."></div>
+      <div class="tool-field"><label class="tool-label">Count</label><input type="number" class="tool-input" id="rep-count" value="10" min="1" max="9999"></div>
+      <div class="tool-field"><label class="tool-label">Separator</label><select class="tool-select" id="rep-sep"><option value="\n">New Line (Enter)</option><option value=" ">Space (Spasi)</option><option value="">No Space</option></select></div>
+      <button class="tool-btn" onclick="window.textRepeat()">Generate</button><button class="tool-btn secondary" onclick="window.copyEl('rep-out')">Copy Result</button>
+      <div class="tool-field" style="margin-top:1.25rem;"><label class="tool-label">Output</label><div class="tool-output" id="rep-out" style="min-height:120px;white-space:pre-wrap;">—</div></div>` 
+  },
+  { id: '24', name: 'Fancy Text Generator', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-wand-magic-sparkles', desc: 'Ubah teks biasa jadi font keren (𝓛𝓲𝓴𝓮 𝓽𝓱𝓲𝓼) untuk bio sosmed.', render: () => `
+      <div class="tool-field"><label class="tool-label">Input Text</label><input type="text" class="tool-input" id="fancy-input" placeholder="Ketik teks..." oninput="window.genFancy()">
+      <div id="fancy-out" style="margin-top:1.25rem;"></div>` ,
+    init: () => window.genFancy()
+  },
+  { id: '25', name: 'Reverse Text', cat: 'text', catLabel: 'TEXT', icon: 'fa-solid fa-rotate-left', desc: 'Balikkan kalimat dari belakang ke depan.', render: () => `
+      <div class="tool-field"><label class="tool-label">Input Text</label><textarea class="tool-textarea" id="rev-input" placeholder="Ketik teks..."></textarea></div>
+      <button class="tool-btn" onclick="window.reverseText()">Reverse</button><button class="tool-btn secondary" onclick="window.copyEl('rev-out')">Copy</button>
+      <div class="tool-field" style="margin-top:1.25rem;"><label class="tool-label">Output</label><div class="tool-output" id="rev-out" style="min-height:80px;white-space:pre-wrap;">—</div></div>` 
+  },
 
-  { id: '18', name: 'JSON Formatter', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-brackets-curly', desc: 'Pretty-print, minify, dan validasi JSON.', render: () => `
-      <div class="tool-field"><label class="tool-label">Input JSON</label><textarea class="tool-textarea" id="json-input" style="min-height:140px;">{"name":"alltoolszack","version":"v7.5"}</textarea></div>
+  { id: '26', name: 'JSON Formatter', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-brackets-curly', desc: 'Pretty-print, minify, dan validasi JSON.', render: () => `
+      <div class="tool-field"><label class="tool-label">Input JSON</label><textarea class="tool-textarea" id="json-input" style="min-height:140px;">{"name":"alltoolszack","version":"v15.0"}</textarea></div>
       <div class="tool-row" style="margin-bottom:1.25rem;"><button class="tool-btn" onclick="window.jsonFormat(2)">Beautify</button><button class="tool-btn" onclick="window.jsonFormat(0)">Minify</button></div>
-      <div class="tool-field"><label class="tool-label">Output</label><div class="tool-output" id="json-out" style="min-height:100px;white-space:pre-wrap;">—</div></div>
-  ` },
-  { id: '19', name: 'URL Encode / Decode', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-globe', desc: 'Percent-encoding untuk URL dan query param.', render: () => `
+      <div class="tool-field"><label class="tool-label">Output</label><div class="tool-output" id="json-out" style="min-height:100px;white-space:pre-wrap;">—</div></div>` 
+  },
+  { id: '27', name: 'JSON to CSV Converter', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-file-csv', desc: 'Ubah data JSON menjadi format tabel CSV (bisa dibuka di Excel).', render: () => `
+      <div class="tool-field"><label class="tool-label">Input JSON Array</label><textarea class="tool-textarea" id="json-csv-input" style="min-height:140px;">[{"name":"Zack","age":20},{"name":"Vyan","age":22}]</textarea></div>
+      <button class="tool-btn" onclick="window.jsonToCsv()"><i class="fa-solid fa-table"></i> Convert to CSV</button>
+      <button class="tool-btn secondary" onclick="window.copyEl('csv-out')">Copy CSV</button>
+      <div class="tool-field" style="margin-top:1.25rem;"><label class="tool-label">CSV Output</label><div class="tool-output" id="csv-out" style="min-height:100px;white-space:pre-wrap;">—</div></div>` 
+  },
+  { id: '28', name: 'URL Encode / Decode', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-globe', desc: 'Percent-encoding untuk URL dan query param.', render: () => `
       <div class="tool-field"><label class="tool-label">Input</label><textarea class="tool-textarea" id="url-input" placeholder="https://example.com?q=hello world"></textarea></div>
       <div class="tool-row" style="margin-bottom:1.25rem;"><button class="tool-btn" onclick="window.urlEnc()">Encode</button><button class="tool-btn" onclick="window.urlDec()">Decode</button></div>
-      <div class="tool-field"><label class="tool-label">Output</label><div class="tool-output" id="url-out">—</div></div>
-  ` },
-  { id: '20', name: 'Color Converter', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-palette', desc: 'Konversi HEX, RGB, HSL dengan preview swatch live.', render: () => `
+      <div class="tool-field"><label class="tool-label">Output</label><div class="tool-output" id="url-out">—</div></div>` 
+  },
+  { id: '29', name: 'Color Converter', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-palette', desc: 'Konversi HEX, RGB, HSL dengan preview swatch live.', render: () => `
       <div class="tool-field"><label class="tool-label">HEX</label><input type="text" class="tool-input" id="color-hex" value="#ffffff" oninput="window.colorFromHex()"></div>
       <div class="tool-field"><label class="tool-label">RGB</label><input type="text" class="tool-input" id="color-rgb" value="rgb(255, 255, 255)" oninput="window.colorFromRGB()"></div>
-      <div class="tool-field"><label class="tool-label">Preview</label><div id="color-preview" style="width:100%;height:70px;background:#ffffff;border-radius:8px;"></div></div>
-    `, init: () => window.colorFromHex() },
-  { id: '21', name: 'Unit Converter', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-ruler', desc: 'Panjang, berat, suhu. Metrik dan imperial.', render: () => `
+      <div class="tool-field"><label class="tool-label">Preview</label><div id="color-preview" style="width:100%;height:70px;background:#ffffff;border-radius:8px;"></div></div>`,
+    init: () => window.colorFromHex() 
+  },
+  { id: '30', name: 'Unit Converter', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-ruler', desc: 'Panjang, berat, suhu. Metrik dan imperial.', render: () => `
       <div class="tool-field"><label class="tool-label">Category</label><select class="tool-select" id="unit-cat" onchange="window.updateUnits()"><option value="length">Length</option><option value="weight">Weight</option><option value="temperature">Temperature</option></select></div>
       <div class="tool-row"><input type="number" class="tool-input" id="unit-from" value="1" oninput="window.convertUnit()" style="flex:1;"><select class="tool-select" id="unit-from-type" onchange="window.convertUnit()" style="flex:1;"></select></div>
       <div style="text-align:center;margin:0.75rem 0;font-family:JetBrains Mono;color:var(--neon-cyan);font-size:1.1rem;">↓</div>
-      <div class="tool-row"><input type="number" class="tool-input" id="unit-to" readonly style="flex:1;"><select class="tool-select" id="unit-to-type" onchange="window.convertUnit()" style="flex:1;"></select></div>
-    `, init: () => { window.updateUnits(); window.convertUnit(); } },
-  { id: '22', name: 'Image Compressor', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-image', desc: 'Kompres gambar di sisi klien. Atur kualitas, lihat before/after.', render: () => `
-      <div class="tool-field"><label class="tool-label">Upload Image</label><div class="img-dropzone" id="iqc-dropzone" onclick="document.getElementById('iqc-file').click()" style="border: 2px dashed var(--ink-trace); padding: 2rem; text-align: center; cursor: pointer; border-radius: 8px;">Click or drag image here<input type="file" id="iqc-file" accept="image/*" style="display:none;" onchange="window.iqcHandleFile(this.files[0])"></div></div>
-      <div class="tool-field"><label class="tool-label">Quality: <span id="iqc-q-val">60</span>%</label><input type="range" id="iqc-quality" min="5" max="100" value="60" oninput="document.getElementById('iqc-q-val').textContent=this.value;window.iqcCompress()" style="padding:0;"></div>
-      <div id="iqc-preview"></div>
-    `, init: () => {
-      const dz = document.getElementById('iqc-dropzone');
-      dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--neon-cyan)'; });
-      dz.addEventListener('dragleave', () => dz.style.borderColor = 'var(--ink-trace)');
-      dz.addEventListener('drop', e => { e.preventDefault(); dz.style.borderColor = 'var(--ink-trace)'; if (e.dataTransfer.files[0]) window.iqcHandleFile(e.dataTransfer.files[0]); });
-    } },
-  { id: '23', name: 'Base64 Image Converter', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-clone', desc: 'Konversi gambar ke string Base64 untuk embed inline.', render: () => `
+      <div class="tool-row"><input type="number" class="tool-input" id="unit-to" readonly style="flex:1;"><select class="tool-select" id="unit-to-type" onchange="window.convertUnit()" style="flex:1;"></select></div>`,
+    init: () => { window.updateUnits(); window.convertUnit(); } 
+  },
+  { id: '31', name: 'Base64 Image Converter', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-clone', desc: 'Konversi gambar ke string Base64 untuk embed inline.', render: () => `
       <div class="tool-field"><label class="tool-label">Upload Image</label><div class="img-dropzone" id="b64img-dropzone" onclick="document.getElementById('b64img-file').click()" style="border: 2px dashed var(--ink-trace); padding: 2rem; text-align: center; cursor: pointer; border-radius: 8px;">Click or drag image here<input type="file" id="b64img-file" accept="image/*" style="display:none;" onchange="window.b64imgHandle(this.files[0])"></div></div>
       <div id="b64img-preview"></div>
       <div class="tool-field"><label class="tool-label">Base64 String Output</label><textarea class="tool-textarea" id="b64img-out" placeholder="Base64 string will appear here..." style="min-height:100px;" readonly></textarea></div>
-      <button class="tool-btn secondary" onclick="window.copyEl('b64img-out')">Copy Base64</button>
-    `, init: () => {
-      const dz = document.getElementById('b64img-dropzone');
-      dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--neon-cyan)'; });
-      dz.addEventListener('dragleave', () => dz.style.borderColor = 'var(--ink-trace)');
-      dz.addEventListener('drop', e => { e.preventDefault(); dz.style.borderColor = 'var(--ink-trace)'; if (e.dataTransfer.files[0]) window.b64imgHandle(e.dataTransfer.files[0]); });
-    } },
-  { id: '24', name: 'Image Color Picker', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-eye-dropper', desc: 'Upload gambar, klik untuk pick warna pixel.', render: () => `
-      <div class="tool-field"><label class="tool-label">Upload Image</label><div class="img-dropzone" id="cp-dropzone" onclick="document.getElementById('cp-file').click()" style="border: 2px dashed var(--ink-trace); padding: 2rem; text-align: center; cursor: pointer; border-radius: 8px;">Click or drag image here<input type="file" id="cp-file" accept="image/*" style="display:none;" onchange="window.cpHandle(this.files[0])"></div></div>
-      <div id="cp-canvas-wrap" style="display:none;margin-bottom:1rem;"><canvas id="cp-canvas" style="max-width:100%;cursor:crosshair;border-radius:8px;"></canvas></div>
-      <div class="tool-field"><label class="tool-label">Picked Color</label><div class="tool-row"><div id="cp-swatch" style="width:50px;height:38px;background:var(--void-card);border-radius:8px;"></div><div class="tool-output" id="cp-result" style="flex:1;">click image</div></div></div>
-    `, init: () => {
-      const dz = document.getElementById('cp-dropzone');
-      dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--neon-cyan)'; });
-      dz.addEventListener('dragleave', () => dz.style.borderColor = 'var(--ink-trace)');
-      dz.addEventListener('drop', e => { e.preventDefault(); dz.style.borderColor = 'var(--ink-trace)'; if (e.dataTransfer.files[0]) window.cpHandle(e.dataTransfer.files[0]); });
-    } },
-
-  { id: '25', name: 'BMI Calculator', cat: 'calc', catLabel: 'CALC', icon: 'fa-solid fa-weight-scale', desc: 'Body Mass Index dengan metrik dan imperial.', render: () => `
-      <div class="tool-field"><label class="tool-label">Weight (kg)</label><input type="number" class="tool-input" id="bmi-weight" value="70"></div>
-      <div class="tool-field"><label class="tool-label">Height (cm)</label><input type="number" class="tool-input" id="bmi-height" value="175"></div>
-      <button class="tool-btn" onclick="window.calcBmi()">Calculate</button>
-      <div class="tool-field" style="margin-top:1.25rem;"><div class="tool-output" id="bmi-out">—</div></div>
-  ` },
-  { id: '26', name: 'Age Calculator', cat: 'calc', catLabel: 'CALC', icon: 'fa-solid fa-calendar-days', desc: 'Hitung umur tepat dalam tahun, bulan, hari.', render: () => `
-      <div class="tool-field"><label class="tool-label">Birth date</label><input type="date" class="tool-input" id="age-birth"></div>
-      <div class="tool-field"><label class="tool-label">Calculate to</label><input type="date" class="tool-input" id="age-target"></div>
-      <button class="tool-btn" onclick="window.calcAge()">Calculate</button>
-      <div class="tool-field" style="margin-top:1.25rem;"><div class="tool-output" id="age-out">—</div></div>
-    `, init: () => { document.getElementById('age-target').value = new Date().toISOString().split('T')[0]; } },
-
-  { id: '27', name: 'QR Code Generator', cat: 'generate', catLabel: 'GENERATE', icon: 'fa-solid fa-qrcode', desc: 'Generate QR code untuk URL, teks. Download PNG.', render: () => `
-      <div class="tool-field"><label class="tool-label">Content</label><textarea class="tool-textarea" id="qr-input" oninput="window.genQR()">https://alltoolszack.dev</textarea></div>
-      <div style="text-align:center;margin-top:1.25rem;"><canvas id="qr-canvas" style="background:#fff;padding:0.75rem;max-width:100%;border-radius:8px;"></canvas></div>
-      <div style="text-align:center;margin-top:1rem;"><button class="tool-btn secondary" onclick="window.downloadQR()">Download PNG</button></div>
-    `, init: () => window.genQR() },
-  { id: '28', name: 'CSS Gradient Generator', cat: 'generate', catLabel: 'GENERATE', icon: 'fa-solid fa-fill-drip', desc: 'Buat gradient CSS visual dengan multiple stops.', render: () => `
+      <button class="tool-btn secondary" onclick="window.copyEl('b64img-out')">Copy Base64</button>`,
+    init: () => { const dz = document.getElementById('b64img-dropzone'); dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = 'var(--neon-cyan)'; }); dz.addEventListener('dragleave', () => dz.style.borderColor = 'var(--ink-trace)'); dz.addEventListener('drop', e => { e.preventDefault(); dz.style.borderColor = 'var(--ink-trace)'; if (e.dataTransfer.files[0]) window.b64imgHandle(e.dataTransfer.files[0]); }); } 
+  },
+  { id: '32', name: 'CSS Gradient Generator', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-fill-drip', desc: 'Buat gradient CSS visual dengan multiple stops.', render: () => `
       <div class="tool-field"><label class="tool-label">Preview</label><div id="grad-preview" style="width:100%;height:120px;background:linear-gradient(90deg,#ffffff,#a855f7);border-radius:8px;margin-bottom:1rem;"></div></div>
       <div class="tool-row" style="margin-bottom:1.25rem;"><input type="color" id="grad-c1" value="#ffffff" oninput="window.gradUpdate()" style="width:50px;height:38px;background:none;border:1px solid var(--ink-trace);cursor:pointer;border-radius:8px;"><input type="color" id="grad-c2" value="#a855f7" oninput="window.gradUpdate()" style="width:50px;height:38px;background:none;border:1px solid var(--ink-trace);cursor:pointer;border-radius:8px;"></div>
       <div class="tool-field"><label class="tool-label">CSS Code</label><div class="tool-output" id="grad-code">—</div></div>
-      <button class="tool-btn secondary" onclick="window.copyEl('grad-code')">Copy CSS</button>
-    `, init: () => window.gradUpdate() },
-  { id: '29', name: 'Fake Data Generator', cat: 'generate', catLabel: 'GENERATE', icon: 'fa-solid fa-user-secret', desc: 'Generate dummy data: nama, email, nomor telepon, alamat.', render: () => `
+      <button class="tool-btn secondary" onclick="window.copyEl('grad-code')">Copy CSS</button>`,
+    init: () => window.gradUpdate() 
+  },
+  { id: '33', name: 'QR Code Generator', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-qrcode', desc: 'Generate QR code untuk URL, teks. Download PNG.', render: () => `
+      <div class="tool-field"><label class="tool-label">Content</label><textarea class="tool-textarea" id="qr-input" oninput="window.genQR()">https://alltoolszack.dev</textarea></div>
+      <div style="text-align:center;margin-top:1.25rem;"><canvas id="qr-canvas" style="background:#fff;padding:0.75rem;max-width:100%;border-radius:8px;"></canvas></div>
+      <div style="text-align:center;margin-top:1rem;"><button class="tool-btn secondary" onclick="window.downloadQR()">Download PNG</button></div>`,
+    init: () => window.genQR() 
+  },
+
+  { id: '34', name: 'BMI Calculator', cat: 'calc', catLabel: 'CALC', icon: 'fa-solid fa-weight-scale', desc: 'Body Mass Index dengan metrik dan imperial.', render: () => `
+      <div class="tool-field"><label class="tool-label">Weight (kg)</label><input type="number" class="tool-input" id="bmi-weight" value="70"></div>
+      <div class="tool-field"><label class="tool-label">Height (cm)</label><input type="number" class="tool-input" id="bmi-height" value="175"></div>
+      <button class="tool-btn" onclick="window.calcBmi()">Calculate</button>
+      <div class="tool-field" style="margin-top:1.25rem;"><div class="tool-output" id="bmi-out">—</div></div>` 
+  },
+  { id: '35', name: 'Age Calculator', cat: 'calc', catLabel: 'CALC', icon: 'fa-solid fa-calendar-days', desc: 'Hitung umur tepat dalam tahun, bulan, hari.', render: () => `
+      <div class="tool-field"><label class="tool-label">Birth date</label><input type="date" class="tool-input" id="age-birth"></div>
+      <div class="tool-field"><label class="tool-label">Calculate to</label><input type="date" class="tool-input" id="age-target"></div>
+      <button class="tool-btn" onclick="window.calcAge()">Calculate</button>
+      <div class="tool-field" style="margin-top:1.25rem;"><div class="tool-output" id="age-out">—</div></div>`,
+    init: () => { document.getElementById('age-target').value = new Date().toISOString().split('T')[0]; } 
+  },
+
+  { id: '36', name: 'Fake Data Generator', cat: 'generate', catLabel: 'GENERATE', icon: 'fa-solid fa-user-secret', desc: 'Generate dummy data: nama, email, nomor telepon, alamat.', render: () => `
       <button class="tool-btn" onclick="window.genFakeData()">Generate Data</button><button class="tool-btn secondary" onclick="window.copyEl('fake-out')">Copy</button>
-      <div class="tool-field" style="margin-top:1.25rem;"><div class="tool-output" id="fake-out" style="min-height:150px;white-space:pre-wrap;">—</div></div>
-  ` }
+      <div class="tool-field" style="margin-top:1.25rem;"><div class="tool-output" id="fake-out" style="min-height:150px;white-space:pre-wrap;">—</div></div>` 
+  },
+  { id: '37', name: 'Fake WA Chat (IQC)', cat: 'generate', catLabel: 'GENERATE', icon: 'fa-solid fa-comments', desc: 'Buat screenshot chat WhatsApp palsu sesuai screenshot.', render: () => `
+      <div class="tool-row" style="gap: 0.5rem; margin-bottom: 1rem;">
+        <input type="text" class="tool-input" id="wa-contact" placeholder="Nama Kontak (Header)" value="Vyan / senpai" style="flex: 1;">
+        <input type="time" class="tool-input" id="wa-time" value="15:25" style="width: 100px;">
+      </div>
+      <div class="tool-row" style="gap: 0.5rem; margin-bottom: 1rem;">
+        <input type="text" class="tool-input" id="wa-msg" placeholder="Ketik pesan..." style="flex: 1;" onkeydown="if(event.key==='Enter')window.addWaMsg()">
+        <select class="tool-select" id="wa-type" style="width: 120px;">
+          <option value="sender">Sender</option>
+          <option value="receiver">Receiver</option>
+        </select>
+        <button class="tool-btn" onclick="window.addWaMsg()"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+      <div class="tool-row" style="gap: 0.5rem; margin-bottom: 1rem;">
+        <label class="tool-checkbox"><input type="checkbox" id="wa-show-menu" checked> Tampilkan Menu Popup & Emoji</label>
+      </div>
+      <button class="tool-btn secondary" onclick="window.resetWaChat()"><i class="fa-solid fa-trash"></i> Reset Chat</button>
+      <button class="tool-btn" onclick="window.downloadWaChat()"><i class="fa-solid fa-download"></i> Download Screenshot</button>
+      
+      <div class="wa-screen" id="wa-screen">
+        <div class="wa-header">
+          <i class="fa-solid fa-arrow-left wa-back"></i>
+          <div class="wa-dp">V</div>
+          <p class="wa-name" id="wa-header-name">Vyan / senpai</p>
+          <div class="wa-icons">
+            <i class="fa-solid fa-video"></i>
+            <i class="fa-solid fa-phone"></i>
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+          </div>
+        </div>
+        <div class="wa-chat-area" id="wa-chat-box"></div>
+      </div>` 
+  },
+
+  { id: '38', name: 'Device Info Checker', cat: 'utility', catLabel: 'UTILITY', icon: 'fa-solid fa-mobile-screen', desc: 'Lihat informasi detail perangkat dan browser Anda.', render: () => `
+      <button class="tool-btn" onclick="window.getDeviceInfo()"><i class="fa-solid fa-satellite-dish"></i> Scan Device</button>
+      <div class="tool-field" style="margin-top:1.25rem;"><div class="tool-output" id="dev-out" style="min-height:150px;white-space:pre-wrap;">Klik scan untuk melihat info perangkat.</div></div>` 
+  },
+  { id: '39', name: 'Link Shortener', cat: 'utility', catLabel: 'UTILITY', icon: 'fa-solid fa-link-slash', desc: 'Perpendki link panjang menjadi link pendek (TinyURL).', render: () => `
+      <div class="tool-field"><label class="tool-label">Long URL</label><input type="text" class="tool-input" id="short-url" placeholder="https://example.com/very-long-url"></div>
+      <button class="tool-btn" onclick="window.shortenUrl()"><i class="fa-solid fa-compress"></i> Shorten</button>
+      <div class="tool-field" style="margin-top:1.25rem;"><label class="tool-label">Short URL</label><div class="tool-output" id="short-out">—</div></div>
+      <button class="tool-btn secondary" onclick="window.copyEl('short-out')">Copy Link</button>` 
+  },
+  { id: '40', name: 'Pomodoro Timer', cat: 'utility', catLabel: 'UTILITY', icon: 'fa-solid fa-stopwatch', desc: 'Timer produktivitas (25 menit kerja, 5 menit istirahat) dengan alarm.', render: () => `
+      <div class="pomodoro-status" id="pomo-status">FOCUS TIME</div>
+      <div class="pomodoro-display" id="pomo-display">25:00</div>
+      <div class="tool-row" style="justify-content: center;">
+        <button class="tool-btn" onclick="window.startPomo()"><i class="fa-solid fa-play"></i> Start</button>
+        <button class="tool-btn secondary" onclick="window.pausePomo()"><i class="fa-solid fa-pause"></i> Pause</button>
+        <button class="tool-btn secondary" onclick="window.resetPomo()"><i class="fa-solid fa-rotate"></i> Reset</button>
+      </div>` 
+  }
 ];
 
-function dlTemplate(platform) {
-  const placeholders = {
-    instagram: 'https://www.instagram.com/reel/...',
-    tiktok: 'https://www.tiktok.com/@user/video/...',
-    youtube: 'https://www.youtube.com/watch?v=...',
-    facebook: 'https://www.facebook.com/watch?v=...',
-    twitter: 'https://twitter.com/user/status/...',
-    terabox: 'https://teraboxapp.com/s/...'
-  };
-  return `
-    <div class="tool-field"><label class="tool-label">Paste ${platform} URL</label><input type="text" class="tool-input" id="dl-url" placeholder="${placeholders[platform] || 'Paste URL here...'}"></div>
-    <button class="tool-btn" onclick="window.fetchDownload('${platform}')"><i class="fa-solid fa-download"></i> Download</button>
-    <button class="tool-btn secondary" onclick="window.clearDownloader()"><i class="fa-solid fa-eraser"></i> Clear</button>
-    <div class="dl-result" id="dl-result"></div>
-  `;
-}
+function dlTemplate(platform) { const placeholders = { instagram: 'https://www.instagram.com/reel/...', tiktok: 'https://www.tiktok.com/@user/video/...', youtube: 'https://www.youtube.com/watch?v=...', facebook: 'https://www.facebook.com/watch?v=...', twitter: 'https://twitter.com/user/status/...', terabox: 'https://teraboxapp.com/s/...' }; return `<div class="tool-field"><label class="tool-label">Paste ${platform} URL</label><input type="text" class="tool-input" id="dl-url" placeholder="${placeholders[platform] || 'Paste URL here...'}"></div><button class="tool-btn" onclick="window.fetchDownload('${platform}')"><i class="fa-solid fa-download"></i> Download</button><button class="tool-btn secondary" onclick="window.clearDownloader()"><i class="fa-solid fa-eraser"></i> Clear</button><div class="dl-result" id="dl-result"></div>`; }
 
 const grid = document.getElementById('tools-grid');
-tools.forEach(t => {
-  const card = document.createElement('div');
-  card.className = 'tool-card';
-  card.dataset.cat = t.cat;
-  card.innerHTML = `
-    <div class="tool-card-top"><div class="tool-icon"><i class="${t.icon}"></i></div><div class="tool-cat">${t.catLabel}</div></div>
-    <h3 class="tool-name">${t.name}</h3><p class="tool-desc">${t.desc}</p><div class="tool-arrow"><span>Open Tool</span><span>↗</span></div>
-  `;
-  card.addEventListener('click', () => openTool(t));
-  grid.appendChild(card);
-});
-
-function revealTools() {
-  const cards = document.querySelectorAll('.tool-card');
-  const obs = new IntersectionObserver(es => {
-    es.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('in'), i * 40); obs.unobserve(e.target); } });
-  }, { threshold: 0.1 });
-  cards.forEach(c => obs.observe(c));
-}
+tools.forEach(t => { const card = document.createElement('div'); card.className = 'tool-card'; card.dataset.cat = t.cat; card.innerHTML = `<div class="tool-card-top"><div class="tool-icon"><i class="${t.icon}"></i></div><div class="tool-cat">${t.catLabel}</div></div><h3 class="tool-name">${t.name}</h3><p class="tool-desc">${t.desc}</p><div class="tool-arrow"><span>Open Tool</span><span>↗</span></div>`; card.addEventListener('click', () => openTool(t)); grid.appendChild(card); });
+function revealTools() { const cards = document.querySelectorAll('.tool-card'); const obs = new IntersectionObserver(es => { es.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('in'), i * 40); obs.unobserve(e.target); } }); }, { threshold: 0.1 }); cards.forEach(c => obs.observe(c)); }
 
 const filterTabs = document.querySelectorAll('.filter-tab');
-filterTabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    const cat = tab.dataset.cat;
-    filterTabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    document.querySelectorAll('.tool-card').forEach(card => { card.classList.toggle('hidden', cat !== 'all' && card.dataset.cat !== cat); });
-  });
-});
+filterTabs.forEach(tab => { tab.addEventListener('click', () => { const cat = tab.dataset.cat; filterTabs.forEach(t => t.classList.remove('active')); tab.classList.add('active'); document.querySelectorAll('.tool-card').forEach(card => { card.classList.toggle('hidden', cat !== 'all' && card.dataset.cat !== cat); }); }); });
 
-const overlay = document.getElementById('modal-overlay');
-const modal = document.getElementById('modal');
-
-function openTool(t) {
-  document.getElementById('modal-label').textContent = `// TOOL ${t.id}`;
-  document.getElementById('modal-title').textContent = t.name;
-  document.getElementById('modal-icon').innerHTML = `<i class="${t.icon}"></i>`;
-  document.getElementById('modal-body').innerHTML = t.render();
-  overlay.classList.add('active'); modal.classList.add('active'); document.body.style.overflow = 'hidden';
-  if (t.init) setTimeout(t.init, 50);
-}
-
+const overlay = document.getElementById('modal-overlay'); const modal = document.getElementById('modal');
+function openTool(t) { document.getElementById('modal-label').textContent = `// TOOL ${t.id}`; document.getElementById('modal-title').textContent = t.name; document.getElementById('modal-icon').innerHTML = `<i class="${t.icon}"></i>`; document.getElementById('modal-body').innerHTML = t.render(); overlay.classList.add('active'); modal.classList.add('active'); document.body.style.overflow = 'hidden'; if (t.init) setTimeout(t.init, 50); }
 function closeModal() { overlay.classList.remove('active'); modal.classList.remove('active'); document.body.style.overflow = ''; }
-overlay.addEventListener('click', closeModal);
-document.getElementById('modal-close').addEventListener('click', closeModal);
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); settingsOverlay.classList.remove('active'); } });
+overlay.addEventListener('click', closeModal); document.getElementById('modal-close').addEventListener('click', closeModal); document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); settingsOverlay.classList.remove('active'); closeAIChat(); } });
 
-window.copyEl = function(id) { const text = document.getElementById(id).textContent; if (!text || text === '—' || text === 'click generate') return; navigator.clipboard.writeText(text); }
+window.copyEl = function(id) { const text = document.getElementById(id).textContent; if (!text || text === '—' || text === 'click generate' || text.startsWith('Klik scan')) return; navigator.clipboard.writeText(text); }
 window.formatBytes = function(bytes) { if (bytes < 1024) return bytes + ' B'; if (bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB'; return (bytes/1048576).toFixed(2) + ' MB'; }
 window.clearDownloader = function() { document.getElementById('dl-url').value = ''; document.getElementById('dl-result').innerHTML = ''; }
 
-window.uploadFile = async function() {
-  if (!window.selectedFile) { document.getElementById('upl-result').innerHTML = `<div class="tool-output" style="color:#ff5555;">Pilih file terlebih dahulu.</div>`; return; }
-  if (window.selectedFile.size > 50 * 1024 * 1024) { document.getElementById('upl-result').innerHTML = `<div class="tool-output" style="color:#ff5555;">Ukuran file melebihi 50MB.</div>`; return; }
-  document.getElementById('upl-result').innerHTML = `<div class="tool-output">Sedang mengunggah... mohon tunggu.</div>`;
-  const btn = document.getElementById('upl-btn'); btn.disabled = true; btn.style.opacity = 0.5;
-  const formData = new FormData(); formData.append('file', window.selectedFile);
-  try {
-    const res = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: formData });
-    const json = await res.json();
-    if (json.status === 'success') {
-      const directUrl = json.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
-      document.getElementById('upl-result').innerHTML = `<div class="dl-card"><div class="dl-info"><div class="dl-title">Upload Berhasil!</div><div class="dl-meta">File: ${window.selectedFile.name}</div><div class="tool-output" id="upl-link">${directUrl}</div><div style="margin-top: 1rem;"><a href="${directUrl}" target="_blank" class="tool-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Link</a><button class="tool-btn secondary" onclick="window.copyEl('upl-link')"><i class="fa-solid fa-copy"></i> Copy Link</button></div></div></div>`;
-    } else { throw new Error('Gagal upload'); }
-  } catch (error) {
-    document.getElementById('upl-result').innerHTML = `<div class="tool-output" style="color:#ff5555;">Error: ${error.message}. API upload mungkin sedang down.</div>`;
-  } finally { btn.disabled = false; btn.style.opacity = 1; }
-}
+window.uploadFile = async function() { if (!window.selectedFile) { document.getElementById('upl-result').innerHTML = `<div class="tool-output" style="color:#ff5555;">Pilih file terlebih dahulu.</div>`; return; } if (window.selectedFile.size > 50 * 1024 * 1024) { document.getElementById('upl-result').innerHTML = `<div class="tool-output" style="color:#ff5555;">Ukuran file melebihi 50MB.</div>`; return; } document.getElementById('upl-result').innerHTML = `<div class="tool-output">Sedang mengunggah... mohon tunggu.</div>`; const btn = document.getElementById('upl-btn'); btn.disabled = true; btn.style.opacity = 0.5; const formData = new FormData(); formData.append('file', window.selectedFile); try { const res = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: formData }); const json = await res.json(); if (json.status === 'success') { const directUrl = json.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/'); document.getElementById('upl-result').innerHTML = `<div class="dl-card"><div class="dl-info"><div class="dl-title">Upload Berhasil!</div><div class="dl-meta">File: ${window.selectedFile.name}</div><div class="tool-output" id="upl-link">${directUrl}</div><div style="margin-top: 1rem;"><a href="${directUrl}" target="_blank" class="tool-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Link</a><button class="tool-btn secondary" onclick="window.copyEl('upl-link')"><i class="fa-solid fa-copy"></i> Copy Link</button></div></div></div>`; } else { throw new Error('Gagal upload'); } } catch (error) { document.getElementById('upl-result').innerHTML = `<div class="tool-output" style="color:#ff5555;">Error: ${error.message}. API upload mungkin sedang down.</div>`; } finally { btn.disabled = false; btn.style.opacity = 1; } }
 
 function getYouTubeId(url) { const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([\w-]{11})/); return m ? m[1] : ''; }
-
-window.fetchDownload = async function(platform) {
-  const url = document.getElementById('dl-url').value.trim();
-  const resultDiv = document.getElementById('dl-result');
-  if (!url) { resultDiv.innerHTML = `<div class="tool-output" style="color:#ff5555;">URL tidak boleh kosong.</div>`; return; }
-  
-  resultDiv.innerHTML = `<div class="tool-output">Menghubungi server, mohon tunggu...</div>`;
-  
-  let apiUrl = '';
-  // API tioxy.uk untuk YT, IG, FB, Twitter, Terabox
-  if (platform === 'youtube') apiUrl = `https://api.tioxy.uk/api/ytdl?url=${encodeURIComponent(url)}`;
-  else if (platform === 'instagram') apiUrl = `https://api.tioxy.uk/api/igdl?url=${encodeURIComponent(url)}`;
-  else if (platform === 'facebook') apiUrl = `https://api.tioxy.uk/api/fbdl?url=${encodeURIComponent(url)}`;
-  else if (platform === 'twitter') apiUrl = `https://api.tioxy.uk/api/twitter?url=${encodeURIComponent(url)}`;
-  else if (platform === 'terabox') apiUrl = `https://api.tioxy.uk/api/terabox?url=${encodeURIComponent(url)}`;
-  
-  // API tikwm untuk TikTok (CORS-friendly, tanpa proxy)
-  if (platform === 'tiktok') {
-    try {
-      const res = await fetch(`https://tikwm.com/api/?url=${encodeURIComponent(url)}`);
-      const json = await res.json();
-      if (json.code !== 0) throw new Error('Gagal mengambil data TikTok');
-      const d = json.data;
-      resultDiv.innerHTML = `
-        <div class="dl-card">
-          ${d.cover ? `<img src="${d.cover}" class="dl-thumb">` : ''}
-          <div class="dl-info">
-            <div class="dl-title">${d.title || 'TikTok Video'}</div>
-            <div class="dl-meta">Author: ${d.author?.nickname || 'Unknown'}</div>
-            <div class="dl-links">
-              <a href="${d.play}" target="_blank" class="tool-btn"><i class="fa-solid fa-video"></i> MP4 HD</a>
-              <a href="${d.wmplay}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-video"></i> MP4 WM</a>
-              <a href="${d.music}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-music"></i> MP3</a>
-            </div>
-          </div>
-        </div>`;
-      return;
-    } catch (error) {
-      resultDiv.innerHTML = `
-        <div class="tool-output" style="color:#ff5555; margin-bottom: 1rem;">Server API TikTok bermasalah. Gunakan tombol cadangan:</div>
-        <a href="https://snaptik.app/?url=${encodeURIComponent(url)}" target="_blank" class="tool-btn" style="background: var(--neon-cyan); color: var(--void-black); border: none;"><i class="fa-solid fa-up-right-from-square"></i> Buka SnapTik</a>`;
-      return;
-    }
-  }
-
-  const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(apiUrl);
-
-  try {
-    const res = await fetch(proxyUrl);
-    if (!res.ok) throw new Error('Server tidak merespons');
-    const json = await res.json();
-    
-    let html = '';
-    const data = json.result || json.data;
-    
-    if (platform === 'youtube') {
-      html += `<div class="dl-card">`;
-      if (data.thumbnail) html += `<img src="${data.thumbnail}" class="dl-thumb">`;
-      html += `<div class="dl-info">
-        <div class="dl-title">${data.title || 'YouTube Video'}</div>
-        <div class="dl-meta">Duration: ${data.duration || '-'}</div>
-        <div class="dl-links">`;
-      if (data.mp4 && data.mp4.length > 0) { data.mp4.forEach(m => { html += `<a href="${m.url}" target="_blank" class="tool-btn"><i class="fa-solid fa-video"></i> MP4 ${m.quality}p</a>`; }); }
-      if (data.mp3 && data.mp3.url) { html += `<a href="${data.mp3.url}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-music"></i> MP3 Audio</a>`; }
-      html += `</div></div></div>`;
-    }
-    else if (platform === 'instagram') {
-      html += `<div class="dl-card"><div class="dl-info">`;
-      if (Array.isArray(data.url)) { data.url.forEach(u => { if (typeof u === 'string') html += `<a href="${u}" target="_blank" class="tool-btn"><i class="fa-solid fa-download"></i> Download Media</a>`; else if (u.url) html += `<a href="${u.url}" target="_blank" class="tool-btn"><i class="fa-solid fa-download"></i> Download ${u.type ? u.type.toUpperCase() : 'Media'}</a>`; }); }
-      else if (data.url) { html += `<a href="${data.url}" target="_blank" class="tool-btn"><i class="fa-solid fa-download"></i> Download Media</a>`; }
-      html += `</div></div>`;
-    }
-    else if (platform === 'terabox' || platform === 'facebook' || platform === 'twitter') {
-      html += `<div class="dl-card">`;
-      if (data.thumbnail) html += `<img src="${data.thumbnail}" class="dl-thumb">`;
-      html += `<div class="dl-info">
-        <div class="dl-title">${data.title || platform + ' Media'}</div>
-        <div class="dl-links">`;
-      if (data.link) html += `<a href="${data.link}" target="_blank" class="tool-btn"><i class="fa-solid fa-download"></i> Download File</a>`;
-      if (data.HD) html += `<a href="${data.HD}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-high-definition"></i> HD</a>`;
-      if (data.SD) html += `<a href="${data.SD}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-standard-definition"></i> SD</a>`;
-      html += `</div></div></div>`;
-    }
-    
-    if (!html) throw new Error('Format tidak dikenali');
-    resultDiv.innerHTML = html;
-  } catch (error) {
-    let fallbackUrl = '';
-    if (platform === 'youtube') fallbackUrl = `https://ssyoutube.com/watch?v=${getYouTubeId(url)}`;
-    else if (platform === 'instagram') fallbackUrl = `https://snapinsta.app/?url=${encodeURIComponent(url)}`;
-    else if (platform === 'facebook') fallbackUrl = `https://snapsave.app/?url=${encodeURIComponent(url)}`;
-    else if (platform === 'twitter') fallbackUrl = `https://ssstwitter.com/?url=${encodeURIComponent(url)}`;
-    else if (platform === 'terabox') fallbackUrl = `https://teradownloader.com/?url=${encodeURIComponent(url)}`;
-
-    resultDiv.innerHTML = `
-      <div class="tool-output" style="color:#ff5555; margin-bottom: 1rem;">Server API sedang sibuk/down. Gunakan tombol cadangan di bawah untuk tetap mendownload:</div>
-      <a href="${fallbackUrl}" target="_blank" class="tool-btn" style="background: var(--neon-cyan); color: var(--void-black); border: none;"><i class="fa-solid fa-up-right-from-square"></i> Buka Web Downloader Cadangan</a>`;
-  }
-}
+window.fetchDownload = async function(platform) { const url = document.getElementById('dl-url').value.trim(); const resultDiv = document.getElementById('dl-result'); if (!url) { resultDiv.innerHTML = `<div class="tool-output" style="color:#ff5555;">URL tidak boleh kosong.</div>`; return; } resultDiv.innerHTML = `<div class="tool-output">Menghubungi server, mohon tunggu...</div>`; let apiUrl = ''; if (platform === 'youtube') apiUrl = `https://api.tioxy.uk/api/ytdl?url=${encodeURIComponent(url)}`; else if (platform === 'instagram') apiUrl = `https://api.tioxy.uk/api/igdl?url=${encodeURIComponent(url)}`; else if (platform === 'facebook') apiUrl = `https://api.tioxy.uk/api/fbdl?url=${encodeURIComponent(url)}`; else if (platform === 'twitter') apiUrl = `https://api.tioxy.uk/api/twitter?url=${encodeURIComponent(url)}`; else if (platform === 'terabox') apiUrl = `https://api.tioxy.uk/api/terabox?url=${encodeURIComponent(url)}`; if (platform === 'tiktok') { try { const res = await fetch(`https://tikwm.com/api/?url=${encodeURIComponent(url)}`); const json = await res.json(); if (json.code !== 0) throw new Error('Gagal mengambil data TikTok'); const d = json.data; resultDiv.innerHTML = `<div class="dl-card">${d.cover ? `<img src="${d.cover}" class="dl-thumb">` : ''}<div class="dl-info"><div class="dl-title">${d.title || 'TikTok Video'}</div><div class="dl-meta">Author: ${d.author?.nickname || 'Unknown'}</div><div class="dl-links"><a href="${d.play}" target="_blank" class="tool-btn"><i class="fa-solid fa-video"></i> MP4 HD</a><a href="${d.wmplay}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-video"></i> MP4 WM</a><a href="${d.music}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-music"></i> MP3</a></div></div></div>`; return; } catch (error) { resultDiv.innerHTML = `<div class="tool-output" style="color:#ff5555; margin-bottom: 1rem;">Server API TikTok bermasalah. Gunakan tombol cadangan:</div><a href="https://snaptik.app/?url=${encodeURIComponent(url)}" target="_blank" class="tool-btn" style="background: var(--neon-cyan); color: var(--void-black); border: none;"><i class="fa-solid fa-up-right-from-square"></i> Buka SnapTik</a>`; return; } } const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(apiUrl); try { const res = await fetch(proxyUrl); if (!res.ok) throw new Error('Server tidak merespons'); const json = await res.json(); let html = ''; const data = json.result || json.data; if (platform === 'youtube') { html += `<div class="dl-card">`; if (data.thumbnail) html += `<img src="${data.thumbnail}" class="dl-thumb">`; html += `<div class="dl-info"><div class="dl-title">${data.title || 'YouTube Video'}</div><div class="dl-meta">Duration: ${data.duration || '-'}</div><div class="dl-links">`; if (data.mp4 && data.mp4.length > 0) { data.mp4.forEach(m => { html += `<a href="${m.url}" target="_blank" class="tool-btn"><i class="fa-solid fa-video"></i> MP4 ${m.quality}p</a>`; }); } if (data.mp3 && data.mp3.url) { html += `<a href="${data.mp3.url}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-music"></i> MP3 Audio</a>`; } html += `</div></div></div>`; } else if (platform === 'instagram') { html += `<div class="dl-card"><div class="dl-info">`; if (Array.isArray(data.url)) { data.url.forEach(u => { if (typeof u === 'string') html += `<a href="${u}" target="_blank" class="tool-btn"><i class="fa-solid fa-download"></i> Download Media</a>`; else if (u.url) html += `<a href="${u.url}" target="_blank" class="tool-btn"><i class="fa-solid fa-download"></i> Download ${u.type ? u.type.toUpperCase() : 'Media'}</a>`; }); } else if (data.url) { html += `<a href="${data.url}" target="_blank" class="tool-btn"><i class="fa-solid fa-download"></i> Download Media</a>`; } html += `</div></div>`; } else if (platform === 'terabox' || platform === 'facebook' || platform === 'twitter') { html += `<div class="dl-card">`; if (data.thumbnail) html += `<img src="${data.thumbnail}" class="dl-thumb">`; html += `<div class="dl-info"><div class="dl-title">${data.title || platform + ' Media'}</div><div class="dl-links">`; if (data.link) html += `<a href="${data.link}" target="_blank" class="tool-btn"><i class="fa-solid fa-download"></i> Download File</a>`; if (data.HD) html += `<a href="${data.HD}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-high-definition"></i> HD</a>`; if (data.SD) html += `<a href="${data.SD}" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-standard-definition"></i> SD</a>`; html += `</div></div></div>`; } if (!html) throw new Error('Format tidak dikenali'); resultDiv.innerHTML = html; } catch (error) { let fallbackUrl = ''; if (platform === 'youtube') fallbackUrl = `https://ssyoutube.com/watch?v=${getYouTubeId(url)}`; else if (platform === 'instagram') fallbackUrl = `https://snapinsta.app/?url=${encodeURIComponent(url)}`; else if (platform === 'facebook') fallbackUrl = `https://snapsave.app/?url=${encodeURIComponent(url)}`; else if (platform === 'twitter') fallbackUrl = `https://ssstwitter.com/?url=${encodeURIComponent(url)}`; else if (platform === 'terabox') fallbackUrl = `https://teradownloader.com/?url=${encodeURIComponent(url)}`; resultDiv.innerHTML = `<div class="tool-output" style="color:#ff5555; margin-bottom: 1rem;">Server API sedang sibuk/down. Gunakan tombol cadangan di bawah untuk tetap mendownload:</div><a href="${fallbackUrl}" target="_blank" class="tool-btn" style="background: var(--neon-cyan); color: var(--void-black); border: none;"><i class="fa-solid fa-up-right-from-square"></i> Buka Web Downloader Cadangan</a>`; } }
 
 window.genPw = function() { const len = +document.getElementById('pw-len').value; let cs = ''; if (document.getElementById('pw-upper').checked) cs += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; if (document.getElementById('pw-lower').checked) cs += 'abcdefghijklmnopqrstuvwxyz'; if (document.getElementById('pw-num').checked) cs += '0123456789'; if (document.getElementById('pw-sym').checked) cs += '!@#$%^&*()-_=+[]{};:,.<>?'; if (!cs) return; const arr = new Uint32Array(len); crypto.getRandomValues(arr); let pw = ''; for (let i = 0; i < len; i++) pw += cs[arr[i] % cs.length]; document.getElementById('pw-out').textContent = pw; }
+window.checkPassStrength = function() { const pass = document.getElementById('pass-check').value; const bar = document.getElementById('pass-bar'); const out = document.getElementById('pass-out'); let score = 0; if(pass.length >= 8) score += 25; if(pass.length >= 12) score += 25; if(/[A-Z]/.test(pass) && /[a-z]/.test(pass)) score += 20; if(/[0-9]/.test(pass)) score += 15; if(/[^A-Za-z0-9]/.test(pass)) score += 15; bar.style.width = score + '%'; if(score < 40) { bar.style.backgroundColor = '#ef4444'; out.textContent = 'Lemah: Tambahkan huruf besar, angka, dan simbol.'; } else if(score < 70) { bar.style.backgroundColor = '#eab308'; out.textContent = 'Sedang: Buat lebih panjang atau tambah simbol.'; } else if(score < 100) { bar.style.backgroundColor = '#22c55e'; out.textContent = 'Kuat: Password bagus!'; } else { bar.style.backgroundColor = '#06b6d4'; out.textContent = 'Sangat Kuat: Password sempurna!'; } };
 window.b64Enc = function() { try { document.getElementById('b64-out').textContent = btoa(unescape(encodeURIComponent(document.getElementById('b64-input').value))); } catch(e) { document.getElementById('b64-out').textContent = 'Error'; } }
 window.b64Dec = function() { try { document.getElementById('b64-out').textContent = decodeURIComponent(escape(atob(document.getElementById('b64-input').value.trim()))); } catch(e) { document.getElementById('b64-out').textContent = 'Error invalid Base64'; } }
 window.genHash = async function() { const t = document.getElementById('hash-input').value; const algo = document.getElementById('hash-algo').value; if (!t) return; const buf = await crypto.subtle.digest(algo, new TextEncoder().encode(t)); document.getElementById('hash-out').textContent = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join(''); }
@@ -1005,7 +732,12 @@ const LOREM_WORDS = 'lorem ipsum dolor sit amet consectetur adipiscing elit sed 
 window.genLorem = function() { const type = document.getElementById('lorem-type').value; const n = +document.getElementById('lorem-count').value; let out = []; if (type === 'words') { const w = []; for (let i = 0; i < n; i++) w.push(LOREM_WORDS[Math.floor(Math.random()*LOREM_WORDS.length)]); out = [w.join(' ')]; } else if (type === 'sentences') { for (let i = 0; i < n; i++) { const wc = 6 + Math.floor(Math.random()*12); const w = []; for (let j = 0; j < wc; j++) w.push(LOREM_WORDS[Math.floor(Math.random()*LOREM_WORDS.length)]); let s = w.join(' '); s = s[0].toUpperCase() + s.slice(1) + '.'; out.push(s); } } else { for (let i = 0; i < n; i++) { const sc = 3 + Math.floor(Math.random()*4); const sents = []; for (let j = 0; j < sc; j++) { const wc = 6 + Math.floor(Math.random()*12); const w = []; for (let k = 0; k < wc; k++) w.push(LOREM_WORDS[Math.floor(Math.random()*LOREM_WORDS.length)]); let s = w.join(' '); s = s[0].toUpperCase() + s.slice(1) + '.'; sents.push(s); } out.push(sents.join(' ')); } } document.getElementById('lorem-out').textContent = out.join('\n\n'); }
 window.ttsSpeak = function() { const text = document.getElementById('tts-input').value; if ('speechSynthesis' in window) { speechSynthesis.cancel(); const utter = new SpeechSynthesisUtterance(text); utter.lang = document.getElementById('tts-lang').value; speechSynthesis.speak(utter); } }
 window.ttsStop = function() { if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+window.textRepeat = function() { const text = document.getElementById('rep-input').value; const count = document.getElementById('rep-count').value; const sep = document.getElementById('rep-sep').value; if(!text || !count) return; let res = Array(parseInt(count)).fill(text).join(sep); document.getElementById('rep-out').textContent = res; }
+const fancyMaps = { bold: [/a/g,/b/g,/c/g,/d/g,/e/g,/f/g,/g/g,/h/g,/i/g,/j/g,/k/g,/l/g,/m/g,/n/g,/o/g,/p/g,/q/g,/r/g,/s/g,/t/g,/u/g,/v/g,/w/g,/x/g,/y/g,/z/g], boldA: ['𝗮','𝗯','𝗰','𝗱','𝗲','𝗳','𝗴','𝗵','𝗶','𝗷','𝗸','𝗹','𝗺','𝗻','𝗼','𝗽','𝗾','𝗿','𝘀','𝘁','𝘂','𝘃','𝘄','𝘅','𝘆','𝘇'], italic: [/a/g,/b/g,/c/g,/d/g,/e/g,/f/g,/g/g,/h/g,/i/g,/j/g,/k/g,/l/g,/m/g,/n/g,/o/g,/p/g,/q/g,/r/g,/s/g,/t/g,/u/g,/v/g,/w/g,/x/g,/y/g,/z/g], italicA: ['𝘢','𝘣','𝘤','𝘥','𝘦','𝘧','𝘨','𝘩','𝘪','𝘫','𝘬','𝘭','𝘮','𝘯','𝘰','𝘱','𝘲','𝘳','𝘴','𝘵','𝘶','𝘷','𝘸','𝘹','𝘺','𝘻'], script: [/a/g,/b/g,/c/g,/d/g,/e/g,/f/g,/g/g,/h/g,/i/g,/j/g,/k/g,/l/g,/m/g,/n/g,/o/g,/p/g,/q/g,/r/g,/s/g,/t/g,/u/g,/v/g,/w/g,/x/g,/y/g,/z/g], scriptA: ['𝓪','𝓫','𝓬','𝓭','𝓮','𝓯','𝓰','𝓱','𝓲','𝓳','𝓴','𝓵','𝓶','𝓷','𝓸','𝓹','𝓺','𝓻','𝓼','𝓽','𝓾','𝓿','𝔀','𝔁','𝔂','𝔃'] };
+window.genFancy = function() { const text = document.getElementById('fancy-input').value.toLowerCase(); let html = ''; for(const style in fancyMaps) { if(style.endsWith('A')) continue; let res = text; const regex = fancyMaps[style]; const map = fancyMaps[style+'A']; for(let i=0; i<26; i++) { res = res.replace(regex[i], map[i]); } html += `<div class="tool-output" style="margin-bottom: 0.5rem; cursor: pointer;" onclick="navigator.clipboard.writeText(this.textContent)">${res}</div>`; } document.getElementById('fancy-out').innerHTML = html; }
+window.reverseText = function() { const text = document.getElementById('rev-input').value; document.getElementById('rev-out').textContent = text.split('').reverse().join(''); }
 window.jsonFormat = function(indent) { try { document.getElementById('json-out').textContent = JSON.stringify(JSON.parse(document.getElementById('json-input').value), null, indent); } catch(e) { document.getElementById('json-out').textContent = '✗ Error: ' + e.message; } }
+window.jsonToCsv = function() { try { const data = JSON.parse(document.getElementById('json-csv-input').value); if(!Array.isArray(data) || !data.length) throw new Error('Input harus array JSON'); const headers = Object.keys(data[0]); const rows = data.map(obj => headers.map(h => `"${obj[h] !== undefined ? obj[h] : ''}"`).join(',')); const csv = [headers.join(','), ...rows].join('\n'); document.getElementById('csv-out').textContent = csv; } catch(e) { document.getElementById('csv-out').textContent = '✗ Error: ' + e.message; } };
 window.urlEnc = function() { document.getElementById('url-out').textContent = encodeURIComponent(document.getElementById('url-input').value); }
 window.urlDec = function() { try { document.getElementById('url-out').textContent = decodeURIComponent(document.getElementById('url-input').value); } catch(e) { document.getElementById('url-out').textContent = 'Error invalid URI'; } }
 window.colorFromHex = function() { const hex = document.getElementById('color-hex').value.replace('#',''); if (!/^[0-9a-f]{6}$/i.test(hex)) return; const r = parseInt(hex.slice(0,2),16), g = parseInt(hex.slice(2,4),16), b = parseInt(hex.slice(4,6),16); document.getElementById('color-rgb').value = `rgb(${r}, ${g}, ${b})`; document.getElementById('color-preview').style.background = '#' + hex; }
@@ -1013,22 +745,202 @@ window.colorFromRGB = function() { const m = document.getElementById('color-rgb'
 const UNITS = { length: { meter:1, kilometer:1000, centimeter:0.01, millimeter:0.001, mile:1609.344, yard:0.9144, foot:0.3048, inch:0.0254 }, weight: { kilogram:1, gram:0.001, milligram:0.000001, metric_ton:1000, pound:0.45359237, ounce:0.028349523125 }, temperature: { celsius:'c', fahrenheit:'f', kelvin:'k' } };
 window.updateUnits = function() { const cat = document.getElementById('unit-cat').value; const fs = document.getElementById('unit-from-type'); const ts = document.getElementById('unit-to-type'); fs.innerHTML = ''; ts.innerHTML = ''; Object.keys(UNITS[cat]).forEach(u => { fs.appendChild(new Option(u.replace(/_/g,' '), u)); ts.appendChild(new Option(u.replace(/_/g,' '), u)); }); if (cat === 'length') { fs.value = 'meter'; ts.value = 'foot'; } else if (cat === 'weight') { fs.value = 'kilogram'; ts.value = 'pound'; } else { fs.value = 'celsius'; ts.value = 'fahrenheit'; } window.convertUnit(); }
 window.convertUnit = function() { const cat = document.getElementById('unit-cat').value; const v = +document.getElementById('unit-from').value; const from = document.getElementById('unit-from-type').value; const to = document.getElementById('unit-to-type').value; if (isNaN(v)) return; let result; if (cat === 'temperature') { let c; if (from === 'celsius') c = v; else if (from === 'fahrenheit') c = (v - 32) * 5/9; else c = v - 273.15; if (to === 'celsius') result = c; else if (to === 'fahrenheit') result = c * 9/5 + 32; else result = c + 273.15; } else { result = v * UNITS[cat][from] / UNITS[cat][to]; } document.getElementById('unit-to').value = +result.toFixed(6); }
+
+// Image Tools Logic
 let iqcOriginalImg = null, iqcOriginalSize = 0;
 window.iqcHandleFile = function(file) { if (!file || !file.type.startsWith('image/')) return; iqcOriginalSize = file.size; const reader = new FileReader(); reader.onload = e => { const img = new Image(); img.onload = () => { iqcOriginalImg = img; window.iqcCompress(); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
 window.iqcCompress = function() { if (!iqcOriginalImg) return; const quality = +document.getElementById('iqc-quality').value / 100; const canvas = document.createElement('canvas'); canvas.width = iqcOriginalImg.naturalWidth; canvas.height = iqcOriginalImg.naturalHeight; const ctx = canvas.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.drawImage(iqcOriginalImg, 0, 0); const dataUrl = canvas.toDataURL('image/jpeg', quality); const newSize = Math.round((dataUrl.length - dataUrl.indexOf(',') - 1) * 3 / 4); const ratio = ((1 - newSize / iqcOriginalSize) * 100).toFixed(1); document.getElementById('iqc-preview').innerHTML = `<div class="tool-row" style="margin-bottom:1rem;"><div style="flex:1;text-align:center;"><img src="${iqcOriginalImg.src}" style="max-width:100%;max-height:150px;border-radius:8px;"><div class="tool-label" style="margin-top:0.5rem;">Original · ${window.formatBytes(iqcOriginalSize)}</div></div><div style="flex:1;text-align:center;"><img src="${dataUrl}" style="max-width:100%;max-height:150px;border-radius:8px;"><div class="tool-label" style="margin-top:0.5rem;">Compressed · ${window.formatBytes(newSize)}</div></div></div><div class="tool-output">Reduction: ${ratio}% smaller</div><a href="${dataUrl}" download="compressed.jpg" class="tool-btn" style="margin-top:1rem;"><i class="fa-solid fa-download"></i> Download</a>`; }
+
+window.convertToPdf = async function() { if(!window.pdfFiles || !window.pdfFiles.length) { document.getElementById('pdf-result').innerHTML = `<div class="tool-output" style="color:#ff5555;">Pilih gambar dulu.</div>`; return; } document.getElementById('pdf-result').innerHTML = `<div class="tool-output">Membuat PDF... mohon tunggu.</div>`; const { jsPDF } = window.jspdf; const pdf = new jsPDF(); for(let i=0; i<window.pdfFiles.length; i++) { const file = window.pdfFiles[i]; const dataUrl = await new Promise(res => { const r = new FileReader(); r.onload = e => res(e.target.result); r.readAsDataURL(file); }); const img = await new Promise(res => { const im = new Image(); im.onload = () => res(im); im.src = dataUrl; }); const imgWidth = pdf.internal.pageSize.getWidth(); const imgHeight = (img.height * imgWidth) / img.width; if(i > 0) pdf.addPage(); pdf.addImage(dataUrl, 'JPEG', 0, 0, imgWidth, imgHeight); } const blob = pdf.output('blob'); const url = URL.createObjectURL(blob); document.getElementById('pdf-result').innerHTML = `<div class="dl-card"><div class="dl-info"><div class="dl-title">PDF Berhasil Dibuat!</div><a href="${url}" download="converted.pdf" class="tool-btn" style="margin-top:1rem;"><i class="fa-solid fa-download"></i> Download PDF</a></div></div>`; };
+
 window.b64imgHandle = function(file) { if (!file || !file.type.startsWith('image/')) return; const reader = new FileReader(); reader.onload = e => { const dataUrl = e.target.result; document.getElementById('b64img-out').value = dataUrl; document.getElementById('b64img-preview').innerHTML = `<img src="${dataUrl}" style="max-width:100%;max-height:150px;border-radius:8px;margin-bottom:1rem;">`; }; reader.readAsDataURL(file); }
 window.cpHandle = function(file) { if (!file || !file.type.startsWith('image/')) return; const reader = new FileReader(); reader.onload = e => { const img = new Image(); img.onload = () => { const cv = document.getElementById('cp-canvas'); const wrap = document.getElementById('cp-canvas-wrap'); const maxW = 600; const scale = Math.min(1, maxW / img.naturalWidth); cv.width = img.naturalWidth * scale; cv.height = img.naturalHeight * scale; const ctx = cv.getContext('2d'); ctx.drawImage(img, 0, 0, cv.width, cv.height); wrap.style.display = 'block'; cv.onclick = ev => { const rect = cv.getBoundingClientRect(); const x = Math.floor((ev.clientX - rect.left) * (cv.width / rect.width)); const y = Math.floor((ev.clientY - rect.top) * (cv.height / rect.height)); const pixel = ctx.getImageData(x, y, 1, 1).data; const hex = '#' + [pixel[0],pixel[1],pixel[2]].map(n => n.toString(16).padStart(2,'0')).join('').toUpperCase(); document.getElementById('cp-swatch').style.background = hex; document.getElementById('cp-result').textContent = `HEX: ${hex}\nRGB: rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`; }; }; img.src = e.target.result; }; reader.readAsDataURL(file); }
+
 window.calcBmi = function() { const w = +document.getElementById('bmi-weight').value; const h = +document.getElementById('bmi-height').value; if (!w || !h) return; const bmi = w / Math.pow(h/100, 2); let cat = ''; if (bmi < 18.5) cat = 'Underweight'; else if (bmi < 25) cat = 'Normal weight'; else if (bmi < 30) cat = 'Overweight'; else cat = 'Obese'; document.getElementById('bmi-out').textContent = `BMI: ${bmi.toFixed(2)} — ${cat}`; }
 window.calcAge = function() { const b = document.getElementById('age-birth').value; const t = document.getElementById('age-target').value; if (!b || !t) return; const bd = new Date(b), td = new Date(t); if (td < bd) return; let y = td.getFullYear() - bd.getFullYear(); let m = td.getMonth() - bd.getMonth(); let d = td.getDate() - bd.getDate(); if (d < 0) { m--; d += new Date(td.getFullYear(), td.getMonth(), 0).getDate(); } if (m < 0) { y--; m += 12; } document.getElementById('age-out').textContent = `${y} years, ${m} months, ${d} days`; }
 window.genQR = function() { const text = document.getElementById('qr-input').value || ' '; const cv = document.getElementById('qr-canvas'); if (typeof QRCode === 'undefined') { setTimeout(window.genQR, 200); return; } QRCode.toCanvas(cv, text, { width: 240, margin: 1, color: { dark: '#050505', light: '#ffffff' } }, () => {}); }
 window.downloadQR = function() { const link = document.createElement('a'); link.download = 'qrcode.png'; link.href = document.getElementById('qr-canvas').toDataURL(); link.click(); }
 window.gradUpdate = function() { const c1 = document.getElementById('grad-c1').value; const c2 = document.getElementById('grad-c2').value; const css = `linear-gradient(90deg, ${c1}, ${c2})`; document.getElementById('grad-preview').style.background = css; document.getElementById('grad-code').textContent = `background: ${css};`; }
 window.genFakeData = function() { const names = ['Andi Wijaya', 'Budi Santoso', 'Citra Lestari', 'Dewi Anggraini', 'Eka Pratama', 'Fajar Nugroho']; const domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'mail.com']; const name = names[Math.floor(Math.random()*names.length)]; const email = name.toLowerCase().replace(' ', '.') + Math.floor(Math.random()*100) + '@' + domains[Math.floor(Math.random()*domains.length)]; const phone = '+62' + Math.floor(1000000000 + Math.random()*9000000000); const address = 'Jl. ' + names[Math.floor(Math.random()*names.length)].split(' ')[0] + ' No.' + Math.floor(Math.random()*100) + ', Jakarta'; document.getElementById('fake-out').textContent = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nAddress: ${address}`; }
-</script>
-  <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
+
+// YouTube Thumbnail Logic
+window.getYTThumb = function() { const url = document.getElementById('yt-thumb-url').value; const id = getYouTubeId(url); const out = document.getElementById('yt-thumb-result'); if(!id) { out.innerHTML = `<div class="tool-output" style="color:#ff5555;">URL YouTube tidak valid.</div>`; return; } out.innerHTML = `<div class="dl-card"><img src="https://img.youtube.com/vi/${id}/maxresdefault.jpg" class="dl-thumb" onerror="this.src='https://img.youtube.com/vi/${id}/hqdefault.jpg'"><div class="dl-info"><div class="dl-title">Thumbnail HD</div><a href="https://img.youtube.com/vi/${id}/maxresdefault.jpg" target="_blank" class="tool-btn"><i class="fa-solid fa-download"></i> Download HD</a> <a href="https://img.youtube.com/vi/${id}/hqdefault.jpg" target="_blank" class="tool-btn secondary"><i class="fa-solid fa-download"></i> Download SD</a></div></div>`; };
+
+// WA Chat (IQC) Logic
+window.addWaMsg = function() {
+  const contactName = document.getElementById('wa-contact').value || 'Contact';
+  document.getElementById('wa-header-name').textContent = contactName;
+  const msg = document.getElementById('wa-msg').value;
+  const type = document.getElementById('wa-type').value;
+  const time = document.getElementById('wa-time').value;
+  const timeFormatted = time ? new Date(`2000-01-01T${time}`).toLocaleTimeString([], {hour: 'numeric', minute:'2-digit', hour12: true}) : '';
+  if(!msg) return;
+  const box = document.getElementById('wa-chat-box');
+  const wrap = document.createElement('div');
+  wrap.className = `wa-bubble-wrap ${type}`;
+  let menuHtml = '';
+  if(document.getElementById('wa-show-menu').checked) {
+    menuHtml = `<div class="wa-emojis"><span>👍</span><span>❤️</span><span>😂</span><span>😮</span><span>😢</span><span>🙏</span><span>🥲</span></div><div class="wa-popup"><span>Balas</span><span>Teruskan</span><span>Salin</span><span>Beri Bintang</span><span>Sematkan</span><span>Laporkan</span><span>Hapus</span></div>`;
   }
-  </script>
+  wrap.innerHTML = `<div class="wa-bubble">${msg}<span class="wa-time">${timeFormatted} <i class="fa-solid fa-check-double" style="font-size:0.6rem; margin-left:2px;"></i></span></div>${menuHtml}`;
+  box.appendChild(wrap);
+  document.getElementById('wa-msg').value = '';
+  document.getElementById('wa-msg').focus();
+  box.scrollTop = box.scrollHeight;
+};
+window.resetWaChat = function() { document.getElementById('wa-chat-box').innerHTML = ''; };
+window.downloadWaChat = function() {
+  const screen = document.getElementById('wa-screen');
+  const btns = document.querySelectorAll('.tool-btn');
+  btns.forEach(b => b.style.display = 'none');
+  html2canvas(screen, { backgroundColor: '#0b141a', scale: 2 }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'fake-wa-chat.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    btns.forEach(b => b.style.display = 'inline-flex');
+  }).catch(err => { alert('Gagal mengunduh screenshot: ' + err.message); btns.forEach(b => b.style.display = 'inline-flex'); });
+};
+
+// Device Info Logic
+window.getDeviceInfo = function() { const out = document.getElementById('dev-out'); let info = ''; info += `Platform: ${navigator.platform}\n`; info += `User Agent: ${navigator.userAgent}\n`; info += `Language: ${navigator.language}\n`; info += `Screen Resolution: ${screen.width} x ${screen.height}\n`; info += `Color Depth: ${screen.colorDepth} bit\n`; info += `Browser Online: ${navigator.onLine ? 'Yes' : 'No'}\n`; info += `Cookies Enabled: ${navigator.cookieEnabled ? 'Yes' : 'No'}\n`; info += `CPU Cores: ${navigator.hardwareConcurrency || 'Unknown'}\n`; if (navigator.deviceMemory) info += `Device Memory: ~${navigator.deviceMemory} GB\n`; if (navigator.connection) info += `Network: ${navigator.connection.effectiveType.toUpperCase()}\n`; if (navigator.getBattery) { navigator.getBattery().then(battery => { out.textContent = info + `Battery: ${Math.round(battery.level * 100)}% ${battery.charging ? '(Charging)' : ''}`; }); } else { out.textContent = info + 'Battery: Not Supported'; } };
+
+// Link Shortener Logic
+window.shortenUrl = async function() { const longUrl = document.getElementById('short-url').value.trim(); const out = document.getElementById('short-out'); if (!longUrl) { out.textContent = 'Masukkan URL terlebih dahulu.'; return; } out.textContent = 'Memproses...'; try { const res = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`); const shortUrl = await res.text(); if(shortUrl.startsWith('http')) { out.textContent = shortUrl; } else { throw new Error('Gagal'); } } catch (error) { out.textContent = 'Error: Gagal memperpendki link. Pastikan URL valid.'; } };
+
+// Pomodoro Logic
+let pomoTimer = null, pomoTime = 25 * 60, pomoMode = 'focus';
+window.startPomo = function() { if(pomoTimer) return; pomoTimer = setInterval(() => { pomoTime--; window.updatePomoDisplay(); if(pomoTime <= 0) { clearInterval(pomoTimer); pomoTimer = null; playClickSound(); // alarm
+    if(pomoMode === 'focus') { pomoMode = 'break'; pomoTime = 5 * 60; document.getElementById('pomo-status').textContent = 'BREAK TIME'; document.getElementById('pomo-status').style.color = '#22c55e'; } else { pomoMode = 'focus'; pomoTime = 25 * 60; document.getElementById('pomo-status').textContent = 'FOCUS TIME'; document.getElementById('pomo-status').style.color = 'var(--neon-cyan)'; } } }, 1000); };
+window.pausePomo = function() { clearInterval(pomoTimer); pomoTimer = null; };
+window.resetPomo = function() { clearInterval(pomoTimer); pomoTimer = null; pomoMode = 'focus'; pomoTime = 25 * 60; document.getElementById('pomo-status').textContent = 'FOCUS TIME'; document.getElementById('pomo-status').style.color = 'var(--neon-cyan)'; window.updatePomoDisplay(); };
+window.updatePomoDisplay = function() { const m = Math.floor(pomoTime / 60).toString().padStart(2, '0'); const s = (pomoTime % 60).toString().padStart(2, '0'); document.getElementById('pomo-display').textContent = `${m}:${s}`; };
+window.updatePomoDisplay();
+
+// ============================================
+// AI CENTER LOGIC (USING POINTER EVENTS)
+// ============================================
+const fabBtn = document.getElementById('fab-main');
+const fabContainer = document.getElementById('fab-container');
+let isDragging = false;
+let startX = 0, startY = 0;
+let moved = false;
+
+fabBtn.addEventListener('pointerdown', (e) => {
+  isDragging = true;
+  moved = false;
+  startX = e.clientX;
+  startY = e.clientY;
+  fabBtn.setPointerCapture(e.pointerId);
+});
+
+fabBtn.addEventListener('pointermove', (e) => {
+  if (!isDragging) return;
+  const dx = e.clientX - startX;
+  const dy = e.clientY - startY;
+  
+  if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+    moved = true;
+    const rect = fabContainer.getBoundingClientRect();
+    let newLeft = rect.left + dx;
+    let newTop = rect.top + dy;
+    newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - rect.width));
+    newTop = Math.max(0, Math.min(newTop, window.innerHeight - rect.height));
+    fabContainer.style.left = newLeft + 'px';
+    fabContainer.style.top = newTop + 'px';
+    fabContainer.style.right = 'auto';
+    fabContainer.style.bottom = 'auto';
+    startX = e.clientX;
+    startY = e.clientY;
+  }
+});
+
+fabBtn.addEventListener('pointerup', (e) => {
+  isDragging = false;
+  fabBtn.releasePointerCapture(e.pointerId);
+  if (!moved) {
+    window.openAIChat();
+  }
+});
+
+window.openAIChat = function() {
+  document.getElementById('ai-chat-overlay').classList.add('active');
+  setTimeout(() => document.getElementById('ai-input').focus(), 100);
+};
+
+window.closeAIChat = function() {
+  document.getElementById('ai-chat-overlay').classList.remove('active');
+};
+
+window.sendAIMessage = async function() {
+  const input = document.getElementById('ai-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  
+  addChatMessage(msg, 'user');
+  input.value = '';
+  
+  // Check for tool shortcuts first
+  const lowerMsg = msg.toLowerCase();
+  let toolMatch = null;
+  if (lowerMsg.includes('youtube') || lowerMsg.includes('yt')) toolMatch = {id: '03', name: 'YouTube Downloader'};
+  if (lowerMsg.includes('tiktok')) toolMatch = {id: '02', name: 'TikTok Downloader'};
+  if (lowerMsg.includes('instagram') || lowerMsg.includes('ig')) toolMatch = {id: '01', name: 'Instagram Downloader'};
+  if (lowerMsg.includes('facebook') || lowerMsg.includes('fb')) toolMatch = {id: '04', name: 'Facebook Downloader'};
+  if (lowerMsg.includes('twitter') || lowerMsg.includes('x ')) toolMatch = {id: '05', name: 'Twitter Downloader'};
+  if (lowerMsg.includes('terabox')) toolMatch = {id: '06', name: 'Terabox Downloader'};
+  if (lowerMsg.includes('password')) toolMatch = {id: '12', name: 'Password Generator'};
+  if (lowerMsg.includes('qr')) toolMatch = {id: '33', name: 'QR Code Generator'};
+  if (lowerMsg.includes('wa') || lowerMsg.includes('whatsapp') || lowerMsg.includes('chat')) toolMatch = {id: '37', name: 'Fake WA Chat'};
+  if (lowerMsg.includes('pdf')) toolMatch = {id: '10', name: 'Image to PDF'};
+  if (lowerMsg.includes('compress') || lowerMsg.includes('image')) toolMatch = {id: '09', name: 'Image Compressor'};
+  if (lowerMsg.includes('shorten') || lowerMsg.includes('link')) toolMatch = {id: '39', name: 'Link Shortener'};
+  if (lowerMsg.includes('timer') || lowerMsg.includes('pomodoro')) toolMatch = {id: '40', name: 'Pomodoro Timer'};
+  if (lowerMsg.includes('device') || lowerMsg.includes('info')) toolMatch = {id: '38', name: 'Device Info'};
+  
+  if (toolMatch) {
+    addChatMessage(`Oke, aku bukain ${toolMatch.name} buat kamu...`, 'ai');
+    setTimeout(() => {
+      openToolById(toolMatch.id);
+      closeAIChat();
+    }, 800);
+    return;
+  }
+  
+  // If not a tool, ask real AI
+  const typingEl = addChatMessage("AI sedang mengetik...", 'ai typing-indicator');
+  
+  try {
+    const prompt = `Kamu adalah asisten AI di dalam web ALL TOOLS ZACK. Jawab singkat, ramah, dan jelas dalam bahasa Indonesia. Pertanyaan: ${msg}`;
+    const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
+    const text = await res.text();
+    typingEl.remove();
+    addChatMessage(text || "Maaf, aku tidak bisa menjawab sekarang.", 'ai');
+  } catch (e) {
+    typingEl.remove();
+    addChatMessage("Maaf, koneksi AI sedang bermasalah. Coba lagi nanti.", 'ai');
+  }
+};
+
+function addChatMessage(text, sender) {
+  const chatBody = document.getElementById('ai-chat-body');
+  const bubble = document.createElement('div');
+  bubble.className = `chat-bubble ${sender}`;
+  bubble.innerHTML = text;
+  chatBody.appendChild(bubble);
+  chatBody.scrollTop = chatBody.scrollHeight;
+  return bubble;
+}
+
+function openToolById(id) {
+  const tool = tools.find(t => t.id === id);
+  if (tool) {
+    openTool(tool);
+  }
+}
+
+// Service Worker
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+</script>
 </body>
 </html>
