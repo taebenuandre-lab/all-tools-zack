@@ -180,9 +180,31 @@ body.theme-cyber .bottom-nav { background: rgba(11,11,18,0.95); } body.theme-bla
 .nav-btn.active { color: var(--neon-cyan); }
 .nav-btn svg { width: 22px; height: 22px; stroke-width: 1.5; }
 .nav-btn span { font-size: 0.6rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.1em; }
-.music-toggle { position: fixed; bottom: 90px; right: 1.5rem; background: var(--void-card); border: 1px solid var(--ink-trace); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 150; color: var(--neon-cyan); transition: all 0.3s; }
+
+/* Music Toggle (Bottom Right) */
+.music-toggle { position: fixed; bottom: 90px; right: 1.5rem; background: var(--void-card); border: 1px solid var(--ink-trace); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 155; color: var(--neon-cyan); transition: all 0.3s; }
 .music-toggle:hover { background: var(--neon-cyan); color: var(--void-black); }
 .music-toggle svg { width: 18px; height: 18px; }
+
+/* AI Center FAB (Above Music Toggle) */
+.fab-container { position: fixed; bottom: 140px; right: 1.5rem; z-index: 155; }
+.fab-btn { width: 48px; height: 48px; background: var(--neon-cyan); color: var(--void-black); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: grab; box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: transform 0.3s; user-select: none; touch-action: none; }
+.fab-btn:active { cursor: grabbing; transform: scale(1.1); }
+
+.ai-chat-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 250; display: none; align-items: center; justify-content: center; padding: 1rem; }
+.ai-chat-overlay.active { display: flex; }
+.ai-chat-window { width: 100%; max-width: 400px; height: 80vh; max-height: 600px; background: var(--void-dark); border: 1px solid var(--ink-trace); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
+.ai-chat-header { padding: 1rem; background: var(--void-card); border-bottom: 1px solid var(--ink-trace); display: flex; justify-content: space-between; align-items: center; }
+.ai-chat-title { font-family: 'Inter', sans-serif; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; color: var(--neon-cyan); }
+.ai-chat-close { background: transparent; border: none; color: var(--ink-soft); font-size: 1.2rem; cursor: pointer; }
+.ai-chat-body { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.8rem; }
+.chat-bubble { padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.85rem; max-width: 90%; font-family: 'Inter', sans-serif; line-height: 1.4; white-space: pre-wrap; }
+.chat-bubble.user { background: var(--neon-cyan); color: var(--void-black); align-self: flex-end; border-bottom-right-radius: 0; }
+.chat-bubble.ai { background: var(--void-card); color: var(--ink-soft); align-self: flex-start; border-bottom-left-radius: 0; border: 1px solid var(--ink-trace); }
+.typing-indicator { background: var(--void-card); color: var(--ink-mute); align-self: flex-start; border-bottom-left-radius: 0; border: 1px solid var(--ink-trace); font-style: italic; opacity: 0.7; }
+.ai-chat-input { padding: 1rem; background: var(--void-card); border-top: 1px solid var(--ink-trace); display: flex; gap: 0.5rem; }
+.ai-chat-input input { flex: 1; background: var(--void-black); border: 1px solid var(--ink-trace); color: #fff; padding: 0.6rem 1rem; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.85rem; outline: none; }
+.ai-chat-input button { background: var(--neon-cyan); color: var(--void-black); border: none; padding: 0 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem; }
 
 footer { padding: 3rem 1.5rem 2rem; border-top: 1px solid var(--ink-trace); position: relative; text-align: center; }
 .footer-bottom { max-width: 1200px; margin: 0 auto; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--ink-faint); letter-spacing: 0.05em; }
@@ -216,34 +238,15 @@ footer { padding: 3rem 1.5rem 2rem; border-top: 1px solid var(--ink-trace); posi
 .pomodoro-display { text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 4rem; font-weight: 700; color: var(--neon-cyan); margin: 1rem 0 2rem; letter-spacing: -0.05em; }
 .pomodoro-status { text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--ink-mute); margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.15em; }
 
-/* AI Center FAB & Chat */
-.fab-container { position: fixed; bottom: 90px; right: 1.5rem; z-index: 160; }
-.fab-btn { width: 56px; height: 56px; background: var(--neon-cyan); color: var(--void-black); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: grab; box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: transform 0.3s; user-select: none; touch-action: none; }
-.fab-btn:active { cursor: grabbing; transform: scale(1.1); }
-
-.ai-chat-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 250; display: none; align-items: center; justify-content: center; padding: 1rem; }
-.ai-chat-overlay.active { display: flex; }
-.ai-chat-window { width: 100%; max-width: 400px; height: 80vh; max-height: 600px; background: var(--void-dark); border: 1px solid var(--ink-trace); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
-.ai-chat-header { padding: 1rem; background: var(--void-card); border-bottom: 1px solid var(--ink-trace); display: flex; justify-content: space-between; align-items: center; }
-.ai-chat-title { font-family: 'Inter', sans-serif; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; color: var(--neon-cyan); }
-.ai-chat-close { background: transparent; border: none; color: var(--ink-soft); font-size: 1.2rem; cursor: pointer; }
-.ai-chat-body { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.8rem; }
-.chat-bubble { padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.85rem; max-width: 90%; font-family: 'Inter', sans-serif; line-height: 1.4; white-space: pre-wrap; }
-.chat-bubble.user { background: var(--neon-cyan); color: var(--void-black); align-self: flex-end; border-bottom-right-radius: 0; }
-.chat-bubble.ai { background: var(--void-card); color: var(--ink-soft); align-self: flex-start; border-bottom-left-radius: 0; border: 1px solid var(--ink-trace); }
-.typing-indicator { background: var(--void-card); color: var(--ink-mute); align-self: flex-start; border-bottom-left-radius: 0; border: 1px solid var(--ink-trace); font-style: italic; opacity: 0.7; }
-.ai-chat-input { padding: 1rem; background: var(--void-card); border-top: 1px solid var(--ink-trace); display: flex; gap: 0.5rem; }
-.ai-chat-input input { flex: 1; background: var(--void-black); border: 1px solid var(--ink-trace); color: #fff; padding: 0.6rem 1rem; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.85rem; outline: none; }
-.ai-chat-input button { background: var(--neon-cyan); color: var(--void-black); border: none; padding: 0 1rem; border-radius: 8px; cursor: pointer; font-size: 1rem; }
-
 @media (max-width: 768px) {
   .hero { padding: 6rem 1rem 3rem; min-height: 80vh; }
   section { padding: 3rem 1rem; }
   .modal { width: 95%; max-height: 90vh; } .modal-header { padding: 1rem; } .modal-body { padding: 1rem; }
   .tools-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; } .tool-card { padding: 1rem; min-height: 160px; }
-  .nav-btn { padding: 0.5rem 1rem; } .music-toggle { bottom: 80px; right: 1rem; }
+  .nav-btn { padding: 0.5rem 1rem; } 
+  .music-toggle { bottom: 80px; right: 1rem; }
+  .fab-container { bottom: 130px; right: 1rem; }
   .contact-grid { grid-template-columns: 1fr; }
-  .fab-container { bottom: 80px; right: 1rem; }
 }
 </style>
 </head>
@@ -257,7 +260,7 @@ footer { padding: 3rem 1.5rem 2rem; border-top: 1px solid var(--ink-trace); posi
       <path class="z" d="M 28 32 L 72 32 L 28 68 L 72 68"/><circle class="dot" cx="88" cy="12" r="3"/>
     </svg>
     <div class="pre-name">ALL TOOLS <span>ZACK</span></div>
-    <div class="pre-tag">Premium Toolkit · v15.0</div>
+    <div class="pre-tag">Premium Toolkit · v16.0</div>
     <div class="pre-bar-wrap"><div class="pre-bar-track"><div class="pre-bar-fill" id="pre-bar-fill"></div></div><div class="pre-meta"><span class="pre-status" id="pre-status">INITIALIZING</span><span class="pre-pct" id="pre-pct">00%</span></div></div>
     <div class="pre-log" id="pre-log"></div>
   </div>
@@ -362,7 +365,7 @@ footer { padding: 3rem 1.5rem 2rem; border-top: 1px solid var(--ink-trace); posi
     <div class="settings-card">
       <h3>Informasi Sistem</h3>
       <div class="info-row"><span class="info-label">Nama Aplikasi</span><span class="info-value">ALL TOOLS BY ZACK</span></div>
-      <div class="info-row"><span class="info-label">Versi</span><span class="info-value">v15.0 (Premium PWA Edition)</span></div>
+      <div class="info-row"><span class="info-label">Versi</span><span class="info-value">v16.0 (Premium PWA Edition)</span></div>
       <div class="info-row"><span class="info-label">Status</span><span class="status-active">Aktif & Stabil</span></div>
     </div>
   </div>
@@ -412,7 +415,7 @@ applyTheme(currentTheme);
 
 const preloader = document.getElementById('preloader'); const preBar = document.getElementById('pre-bar-fill'); const prePct = document.getElementById('pre-pct'); const preStatus = document.getElementById('pre-status'); const preLog = document.getElementById('pre-log');
 const statusPhases = [{ at: 0, text: 'INITIALIZING SYSTEM' }, { at: 20, text: 'LOADING MODULES' }, { at: 45, text: 'BINDING EVENT' }, { at: 70, text: 'COMPILING SHADERS' }, { at: 90, text: 'FINALIZING' }, { at: 100, text: 'READY' }];
-const logMessages = ['boot all_tools_zack v15.0', 'init webgl context', 'load fluid shader', 'mount 40 tool modules', 'init ai center', 'register event listeners', 'build tools grid', 'start scramble decode', 'system online'];
+const logMessages = ['boot all_tools_zack v16.0', 'init webgl context', 'load fluid shader', 'mount 40 tool modules', 'init ai center', 'register event listeners', 'build tools grid', 'start scramble decode', 'system online'];
 function addLogLine(msg, delay) { setTimeout(() => { const line = document.createElement('div'); line.className = 'pre-log-line'; line.textContent = msg; preLog.appendChild(line); if (preLog.children.length > 4) preLog.removeChild(preLog.firstChild); }, delay); }
 function runPreloader() { logMessages.forEach((msg, i) => addLogLine(msg, 200 + i * 280)); let p = 0; const interval = setInterval(() => { p += Math.random() * 6 + 2; if (p >= 100) p = 100; preBar.style.width = p + '%'; prePct.textContent = String(Math.floor(p)).padStart(2, '0') + '%'; for (let i = statusPhases.length - 1; i >= 0; i--) { if (p >= statusPhases[i].at) { preStatus.textContent = statusPhases[i].text; break; } } if (p >= 100) { clearInterval(interval); setTimeout(() => { preloader.classList.add('done'); document.body.classList.add('loaded'); setTimeout(() => { preloader.style.display = 'none'; scramble(); revealTools(); }, 1000); }, 500); } }, 100); }
 setTimeout(runPreloader, 1600);
@@ -575,7 +578,7 @@ const tools = [
   },
 
   { id: '26', name: 'JSON Formatter', cat: 'convert', catLabel: 'CONVERT', icon: 'fa-solid fa-brackets-curly', desc: 'Pretty-print, minify, dan validasi JSON.', render: () => `
-      <div class="tool-field"><label class="tool-label">Input JSON</label><textarea class="tool-textarea" id="json-input" style="min-height:140px;">{"name":"alltoolszack","version":"v15.0"}</textarea></div>
+      <div class="tool-field"><label class="tool-label">Input JSON</label><textarea class="tool-textarea" id="json-input" style="min-height:140px;">{"name":"alltoolszack","version":"v16.0"}</textarea></div>
       <div class="tool-row" style="margin-bottom:1.25rem;"><button class="tool-btn" onclick="window.jsonFormat(2)">Beautify</button><button class="tool-btn" onclick="window.jsonFormat(0)">Minify</button></div>
       <div class="tool-field"><label class="tool-label">Output</label><div class="tool-output" id="json-out" style="min-height:100px;white-space:pre-wrap;">—</div></div>` 
   },
@@ -818,7 +821,7 @@ window.updatePomoDisplay = function() { const m = Math.floor(pomoTime / 60).toSt
 window.updatePomoDisplay();
 
 // ============================================
-// AI CENTER LOGIC (USING POINTER EVENTS)
+// AI CENTER LOGIC (CLASSIC DRAG & CLICK)
 // ============================================
 const fabBtn = document.getElementById('fab-main');
 const fabContainer = document.getElementById('fab-container');
@@ -826,18 +829,25 @@ let isDragging = false;
 let startX = 0, startY = 0;
 let moved = false;
 
-fabBtn.addEventListener('pointerdown', (e) => {
+function handleStart(e) {
   isDragging = true;
   moved = false;
-  startX = e.clientX;
-  startY = e.clientY;
-  fabBtn.setPointerCapture(e.pointerId);
-});
+  const touch = e.touches ? e.touches[0] : e;
+  startX = touch.clientX;
+  startY = touch.clientY;
+  
+  document.addEventListener('mousemove', handleMove);
+  document.addEventListener('touchmove', handleMove, { passive: false });
+  document.addEventListener('mouseup', handleEnd);
+  document.addEventListener('touchend', handleEnd);
+}
 
-fabBtn.addEventListener('pointermove', (e) => {
+function handleMove(e) {
   if (!isDragging) return;
-  const dx = e.clientX - startX;
-  const dy = e.clientY - startY;
+  if (e.touches) e.preventDefault();
+  const touch = e.touches ? e.touches[0] : e;
+  const dx = touch.clientX - startX;
+  const dy = touch.clientY - startY;
   
   if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
     moved = true;
@@ -850,18 +860,25 @@ fabBtn.addEventListener('pointermove', (e) => {
     fabContainer.style.top = newTop + 'px';
     fabContainer.style.right = 'auto';
     fabContainer.style.bottom = 'auto';
-    startX = e.clientX;
-    startY = e.clientY;
+    startX = touch.clientX;
+    startY = touch.clientY;
   }
-});
+}
 
-fabBtn.addEventListener('pointerup', (e) => {
+function handleEnd(e) {
   isDragging = false;
-  fabBtn.releasePointerCapture(e.pointerId);
+  document.removeEventListener('mousemove', handleMove);
+  document.removeEventListener('touchmove', handleMove);
+  document.removeEventListener('mouseup', handleEnd);
+  document.removeEventListener('touchend', handleEnd);
+  
   if (!moved) {
     window.openAIChat();
   }
-});
+}
+
+fabBtn.addEventListener('mousedown', handleStart);
+fabBtn.addEventListener('touchstart', handleStart);
 
 window.openAIChat = function() {
   document.getElementById('ai-chat-overlay').classList.add('active');
